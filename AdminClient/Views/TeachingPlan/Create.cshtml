@@ -1,0 +1,46 @@
+﻿@model AdminClient.ViewModels.TeachingPlanData
+
+<form action="/TeachingPlan/SaveTeachingPlan" method="post">
+    <input type="hidden" name="TeachingPlanId" value="@Model.TeachingPlanId" />
+    <input name="TeachingPlanName" placeholder="School Name" value="@Model.TeachingPlanName" />
+    <select name="eBookChapterId">
+        <option>Select eBookChapter</option>
+        @{
+            string eBookSelected = string.Empty;
+        }
+        @foreach (var item in ViewBag.eBookChaptersData.data)
+        {
+            if (Model.eBookChapterId == Convert.ToInt32(item.eBookChapterId))
+            {
+                eBookSelected = "selected";
+            }
+            else
+            {
+                eBookSelected = "";
+            }
+            <option value="@item.eBookChapterId" @eBookSelected>@item.eBookChapterTitle</option>
+        }
+    </select>
+    <input name="DayNumber" placeholder="School Pin Code" value="@Model.DayNumber" />
+    <select name="AcademyYearId">
+        <option>Select Academy Year</option>
+        @{
+            string selected = string.Empty;
+        }
+        @foreach (var item in ViewBag.AcademyYearData.data)
+        {
+            if (Model.AcademyYearId == Convert.ToInt32(item.academyYearId))
+            {
+                selected = "selected";
+            }
+            else
+            {
+                selected = "";
+            }
+            <option value="@item.academyYearId" @selected>@item.academyYearName</option>
+        }
+    </select>
+    <input type="submit" title="Submit" />
+</form>
+
+

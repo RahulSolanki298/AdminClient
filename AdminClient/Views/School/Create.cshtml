@@ -1,0 +1,109 @@
+﻿@model AdminClient.ViewModels.SchoolModel
+
+<form action="/School/SaveSchool" method="post">
+    <input type="hidden" name="SchoolId" value="@Model.SchoolId" />
+    <input name="SchoolName" placeholder="School Name" value="@Model.SchoolName" />
+    <input name="SchoolAddress" placeholder="School Address" value="@Model.SchoolAddress" />
+    <input name="SchoolCity" placeholder="School City" value="@Model.SchoolCity" />
+    <input name="SchoolPinCode" placeholder="School Pin Code" value="@Model.SchoolPinCode" />
+    <input name="SchoolState" placeholder="School State" value="@Model.SchoolState" />
+    <input name="SchoolPhone" placeholder="SchoolPhone" value="@Model.SchoolPhone" />
+    <input name="EstablishmentDate" placeholder="Establishment Date" value="@Model.EstablishmentDate" />
+    <input name="AcademicYear" placeholder="Academy Year" value="@Model.AcademicYear" />
+
+    <input name="SchoolCode" placeholder="School Code " value="@Model.SchoolCode"/>
+    <input name="AcademicStartDate" placeholder="Academic Start Date" value="@Model.AcademicStartDate"/>
+    <input name="AcademicEndDate" placeholder="Academic End Date" value="@Model.AcademicEndDate" />
+    <input name="GeoLocation" placeholder="Geo Location" value="@Model.GeoLocation" />
+    <input name="SchoolOwnerFirstName" placeholder="School Owner FirstName" value="@Model.SchoolOwnerFirstName" />
+    <input name="SchoolOwnerMiddelName" placeholder="School Owner MiddelName" value="@Model.SchoolOwnerMiddelName" />
+    <input name="SchoolOwnerLastName" placeholder="School Owner LastName" value="@Model.SchoolOwnerFirstName" />
+    <input name="SchoolOwnerEmail" placeholder="School Owner Email" value="@Model.SchoolOwnerEmail" />
+    <input name="SchoolOwnerPhone" placeholder="School Owener Phone" value="@Model.SchoolOwnerPhone" />
+    <input name="SchoolPrincipleFirstName" placeholder="School Principle FirstName" value="@Model.SchoolPrincipleFirstName" />
+    <input name="SchoolPrincipleMiddelName" placeholder="School Principle MiddelName" value="@Model.SchoolPrincipleMiddelName" />
+    <input name="SchoolPrincipleLastName" placeholder="School Principle LastName" value="@Model.SchoolPrincipleLastName" />
+    <input name="SchoolPrincipleEmail" placeholder="School Principle Email" value="@Model.SchoolPrincipleEmail"/>
+    <input name="SchoolPrinciplePhone" placeholder="School Principle Phone" value="@Model.SchoolPrinciplePhone" />
+    <input name="SchoolCoordinatorFirstName" placeholder="School Coordinator FirstName" value="@Model.SchoolCoordinatorFirstName" />
+    <input name="SchoolCoordinatorMiddelName" placeholder="School Coordinator MiddelName" value="@Model.SchoolCoordinatorMiddelName" />
+    <input name="SchoolCoordinatorLastName" placeholder="School Coordinator LastName" value="@Model.SchoolCoordinatorLastName" />
+    <input name="SchoolCoordinatorEmail" placeholder="School Coordinator Email" value="@Model.SchoolCoordinatorEmail" />
+    <input name="SchoolCoordinatorPhone" placeholder="School Coordinator Phone" value="@Model.SchoolCoordinatorPhone" />
+    <input name="SchoolLogo1Path" placeholder="School Logo1" value="@Model.SchoolLogo1Path" />
+    <input name="SchoolLogo2Path" placeholder="School Logo2" value="@Model.SchoolLogo2Path" />
+    <input name="DashboardPicPath" placeholder="Dashboard Pictuer" value="@Model.DashboardPicPath" />
+    <input name="SchoolEmail" placeholder="School Email" value="@Model.SchoolEmail" />
+    <input name="SchoolWebsite" placeholder="School Website" value="@Model.SchoolWebsite" />
+    <input name="SchoolTrustName" placeholder="School TrustName" value="@Model.SchoolTrustName" />
+    <input name="SchoolPAN" placeholder="School PAN" value="@Model.SchoolPAN" />
+    <input name="SchoolGSTNo" placeholder="School GSTNo" value="@Model.SchoolGSTNo" />
+    @*@{
+        var cnt = ViewBag.Data;
+        int i = 1;
+        foreach (var item in cnt)
+        {
+            <div class="row">
+                <ejs-combobox id="Class_@i" name="Class_@i" dataSource="@ViewBag.Data" placeholder="Select Class">
+                    <e-combobox-fields text="ClassName" value="ClassId"></e-combobox-fields>
+                </ejs-combobox>
+                <input id="TotalDivisions_@i" placeholder="Total Division (e.g. 5)" />
+                <input id="ClassBookPrice_@i" placeholder="Class Book Price" />
+
+            </div>
+            i++;
+        }
+
+    }*@
+    <input type="submit" title="Submit" />
+</form>
+
+
+<input type="hidden" name="examid" id="examid" />
+<script type="text/javascript">
+    function countrychange() {
+        // disable the state DropDownList
+        var countryObj = document.getElementById('Exam').ej2_instances[0];
+        //alert(countryObj.value);
+          $('#examid').val(countryObj.value);
+        //alert($('#examid').val());
+        var state = document.getElementById('examtopiccount').ej2_instances[0];
+
+        state.enabled = true;
+        //frame the query based on selected value in country DropDownList.
+        var tempQuery = new ej.data.Query().where('ExamId', 'equal', countryObj.value);
+        // set the framed query based on selected value in country DropDownList.
+
+        state.query = tempQuery;
+
+        // set null value to state DropDownList text property
+        state.text = null;
+        state.value = null;
+        //  bind the property changes to state DropDownList
+        state.dataBind();
+      // alert(state.getItems().length);
+        var len = state.getItems().length;
+         ej.base.enableRipple(true);
+         var result = state.dataSource;
+        document.getElementById('input-container').replaceChildren();
+        for (i = 0; i < result.length; i++) {
+           if(countryObj.value==result[i].ExamId) {
+            //alert(result[i].ExamId);
+
+            var element = document.createElement('input');
+
+            element.setAttribute("id", result[i].ExamTopicName + result[i].ExamTopicId);
+            element.setAttribute("name", result[i].ExamTopicName + result[i].ExamTopicId);
+            document.getElementById('input-container').appendChild(element);
+            new ej.inputs.Input.createInput({
+                element: element,
+
+                properties: {
+                    placeholder: result[i].ExamTopicName
+
+                }
+            });
+        }
+        }
+    }
+</script>

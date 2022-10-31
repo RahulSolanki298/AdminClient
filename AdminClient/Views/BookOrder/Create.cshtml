@@ -1,0 +1,34 @@
+﻿<form action="Create" method="post">
+    @{
+        var cnt = ViewBag.Class;
+        int i = 1;
+        foreach (var item in cnt)
+        {
+            <div class="row">
+                <label id="lbl1_@i" name="lbl1_@i">@item.Price</label>
+                <input type="text" name="lbl_@i" id="lbl_@i" dataSource="@item" value="@item.ClassId" readonly=true />
+                <input type="text" name="Class1_@i" id="Class1_@i" placeholder="Order Quantity (e.g. 5)" value="@item.ClassId" enabled="false" />
+                @* <ejs-combobox id="Class_@i" name="Class_@i"  dataSource="@ViewBag.Class" placeholder="Select Class" >
+        <e-combobox-fields text="ClassMaster.ClassName" value="ClassMaster.ClassId"></e-combobox-fields>
+        </ejs-combobox>*@
+
+                <input type="text" name="OrderQty_@i" id=" OrderQty_@i" placeholder="Order Quantity (e.g. 5)" />
+                <input type="text" name="ClassBookPrice_@i" id="ClassBookPrice_@i" placeholder="Class Book Price" dataSource="@item" value="@item.Price" readonly="true"></input >
+                <input type="text" name="Total_@i" id="Total_@i" placeholder="Order Total (e.g. 5)" />
+
+
+
+            </div>
+            i++;
+        }
+        <input  id="GrandTotal" enabled="false" />
+
+
+
+    }
+
+
+    <input type="submit" title="Submit" />
+
+
+</form>

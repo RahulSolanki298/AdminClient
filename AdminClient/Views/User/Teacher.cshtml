@@ -1,0 +1,525 @@
+﻿@using Microsoft.Extensions.Configuration;
+@using Microsoft.AspNetCore.Http
+@inject IConfiguration Configuration;
+
+@{
+    ViewBag.Title = "User";
+    string apiUrl = Configuration.GetValue<string>("WebAPIBaseUrl");
+
+    var schoolid =0;
+        if (@Context.Session.GetInt32("schoolId") != null) {
+            schoolid =Convert.ToInt32(@Context.Session.GetInt32("schoolId"));}
+}
+
+<div class="row float-right">
+    <button type="button" onclick="showAddBtn()" data-toggle="modal" data-target="#userModal" class="btn btn-primary mb-1 mr-3">Add New</button>
+</div>
+<div class="table-responsive">
+    <table id="userTable" class="table table-striped table-bordered table-hover table-full-width">
+        <thead>
+            <tr>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>Role</th>
+                <th>Mobile</th>
+                <th>Email</th>
+                <th>Date of Birth</th>
+                <th>User Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+<div id="userModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+
+            </div>
+            <div class="modal-body">
+                <form action="#" role="form" class="validate" id="formPost" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="control-label">First Name<i class="fas fa-exclamation-triangle text-danger fa-sm"></i></label>
+                                        <input type="text" class="form-control" id="firstname" autocomplete="off" required />
+                                    </div>
+                                </div>
+                                 <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Last Name<i class="fas fa-exclamation-triangle text-danger fa-sm"></i></label>
+                                        <input type="text" class="form-control" id="lastname" autocomplete="off" required />
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Mobile</label>                                       
+                                        <div class="input-group mb-2">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text"><i class="fas fa-mobile-alt"></i></div>
+                                            </div>
+                                            <input type="text" class="form-control" id="mobile" autocomplete="off" />
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Email</label>                                      
+                                        <div class="input-group mb-2">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text"><i class="fas fa-envelope"></i></div>
+                                            </div>
+                                            <input type="email" class="form-control" id="email" autocomplete="off" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Username<i class="fas fa-exclamation-triangle text-danger fa-sm"></i></label>
+                                        <input type="text" class="form-control" id="username" autocomplete="off" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">                              
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Password<i class="fas fa-exclamation-triangle text-danger fa-sm"></i></label>
+                                        <input type="text" class="form-control" id="password" autocomplete="off" required />
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Date of Birth</label>
+                                        <div class="input-group mb-2">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text"><i class="fas fa-calendar-alt"></i></div>
+                                            </div>
+                                            <input type="text" class="form-control datepicker" id="dob" autocomplete="off">
+                                        </div>                                        
+                                    </div>                                   
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Role<i class="fas fa-exclamation-triangle text-danger fa-sm"></i></label>
+                                        <select id="role" class="custom-select" required></select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="text-center">
+                                        <img id="profilePic" src="" width="90" class="rounded-circle" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Profile picture</label>
+                                        <div class="custom-file mt-0">
+                                            <input type="file" class="custom-file-input" id="pp" name="pp">
+                                            <label class="custom-file-label" for="proPic">Choose file</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <button type="button" id="btnSave" class="btn btn-primary" style="display:none">Save</button>
+                                    <button type="button" id="btnUpdate" class="btn btn-primary" style="display:none">Update</button>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section scripts{
+    <script>
+
+        var userIdForUpdate;
+        var imgPath;
+
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            if (checkImageFormat(fileName)) {
+                $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+            } else {
+                sweetAlert("Validation Alert!", "Upload Image file only!", "warning");
+                resetInputFile('#userModal');
+            }
+
+        });
+
+        $(function () {
+            loadUsers();
+
+            $('#userTable tbody').on('click', 'button[data-target="#userModal"]', function () {
+                var id = $(this).data('id');
+                loadSingleUser(id);
+                $('#btnUpdate').show();
+                $('#btnSave').hide();
+                userIdForUpdate = id;
+            });
+
+            $('#userTable tbody').on('click', 'button[data-target="#delete"]', function () {
+                var id = $(this).data('id');
+
+                swal({
+                    html: true,
+                    title: "Are you sure?",
+                    text: "You will not be able to recover this data!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, confirm it!",
+                    closeOnConfirm: false
+                }, function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "@apiUrl/api/Users/DeleteSingleUser/" + id,
+                        contentType: "application/json; charset=utf-8",
+                        headers: {
+                            "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                        },
+                        dataType: "json",
+                        success: function (data, statusText, xhr) {
+                            if (xhr.status == 200) {
+                                $('#userTable').DataTable().ajax.reload(null, false);
+                                sweetAlert({
+                                    html: true,
+                                    title: "User",
+                                    text: "Successfully deleted!",
+                                    type: "success"
+                                });
+                            } else if (xhr.status == 202) {
+                                sweetAlert("Validation Alert!", data.responseMsg, "warning");
+                            } else {
+                                sweetAlert("Validation Alert!", "Something unexpected!", "warning");
+                            }
+                        },
+                        error: function (data) {
+                            if (data.status == 401) {
+                                window.location.replace('/Message/TokenExpire');
+                            } else if (data.status == 403) {
+                                window.location.replace('/Message/Unauthorize');
+                            }
+                        }
+                    });
+                });
+            });
+
+            $("#btnSave").click(function (e) {
+                if (!document.getElementById("formPost").checkValidity()) {
+                    e.preventDefault();
+                } else {
+                    imgPath = '';
+                    uploadFile();
+
+                        var model = {
+                            userRoleId: parseInt($("#role").val()),
+                            firstName: $.trim($("#firstname").val()),
+                            lastName: $.trim($("#lastname").val()),
+                            mobile: $.trim($("#mobile").val()),
+                            email: $.trim($("#email").val()),
+                            dateOfBirth: $.trim($("#dob").val()) == '' ? null : $.trim($("#dob").val().replace(/\//g, '-')),
+                            imagePath: imgPath,
+                            userName: $.trim($("#username").val()),
+                            password: $.trim($("#password").val()),
+                            addedBy:@Context.Session.GetInt32("UserId"),                          
+                        }
+                    console.log(model);
+
+                $.ajax({
+                    type: "POST",
+                    url: "@apiUrl/api/Users/CreateUser",
+                    data: JSON.stringify(model),
+                    contentType: "application/json; charset=utf-8",
+                    headers: {
+                            "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                    },
+                    dataType: "json",
+                    success: function (data, statusText, xhr) {
+                        //console.log(xhr.status);
+                        //console.log(data);
+                        if (xhr.status === 200) {
+                            $('#userTable').DataTable().ajax.reload(null, false);
+                            sweetAlert({
+                                html: true,
+                                title: "User",
+                                text: "Successfully created!",
+                                type: "success"
+                                });
+                        } else if (data.status === "duplicate") {
+                            sweetAlert("Validation Alert!", data.responseMsg, "warning");
+                        } else if (data.status === "error") {
+                            sweetAlert("Validation Alert!", data.responseMsg, "warning");
+                        }else {
+                                sweetAlert("Validation Alert!", "Something unexpected!", "warning");
+                            }
+                    },
+                    error: function (data) {
+                       // alert(data);
+                        if (data.status == 401) {
+                            window.location.replace('/Message/TokenExpire');
+                        } else if (data.status == 403) {
+                            window.location.replace('/Message/Unauthorize');
+                        } else if (data.status == 400) {
+                            sweetAlert("Validation Alert!", "Please check input data!", "warning");
+                        }
+                    }
+                    });
+                }
+            });
+
+            $("#btnUpdate").click(function (e) {
+                if (!document.getElementById("formPost").checkValidity()) {
+                    e.preventDefault();
+                } else {
+                    imgPath = '';
+                    var currentImageSrc = '';
+                    currentImageSrc = $('#profilePic').attr('src');                   
+
+                    if ($('.custom-file-label').text() != '' && $('.custom-file-label').text() !='Choose file') {
+                        uploadFile();
+                    } else if (currentImageSrc!='') {
+                        imgPath = currentImageSrc;
+                    }                   
+                    var model = {
+                        userId: userIdForUpdate,
+                        userRoleId: parseInt($("#role").val()),
+                        firstName: $.trim($("#firstname").val()),
+                        lastName: $.trim($("#lastname").val()),
+                        mobile: $.trim($("#mobile").val()),
+                        email: $.trim($("#email").val()),
+                        dateOfBirth: $.trim($("#dob").val()) == '' ? null : $.trim($("#dob").val().replace(/\//g, '-')),
+                        imagePath: imgPath,
+                        userName: $.trim($("#username").val()),
+                        password: $.trim($("#password").val()),
+                        lastUpdatedBy:@Context.Session.GetInt32("UserId"),                       
+                    }
+                    console.log(model);
+                    $.ajax({
+                        type: "POST",
+                        url: "@apiUrl/api/Users/UpdateUser",
+                        data: JSON.stringify(model),
+                        contentType: "application/json; charset=utf-8",
+                        headers: {
+                            "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                        },
+                        dataType: "json",
+                        success: function (data, statusText, xhr) {
+                            if (xhr.status==200) {
+                                $('#userTable').DataTable().ajax.reload(null, false);
+                                    sweetAlert({
+                                        html: true,
+                                        title: "User",
+                                        text: "Successfully updated!",
+                                        type: "success"
+                                    });
+                            } else if (xhr.status == 202) {
+                                sweetAlert("Validation Alert!", data.responseMsg, "warning");
+                            } else {
+                                sweetAlert("Validation Alert!", "Something unexpected!", "warning");
+                            }
+                        },
+                        error: function (data) {
+                            if (data.status == 401) {
+                                window.location.replace('/Message/TokenExpire');
+                            } else if (data.status == 403) {
+                                window.location.replace('/Message/Unauthorize');
+                            } else if (data.status == 400) {
+                                sweetAlert("Validation Alert!", "Please check input data!", "warning");
+                            }
+                        }
+                    });
+                }
+            });
+
+        });
+
+        function loadSingleUser(id) {
+            $.ajax({
+                type: "GET",
+                url: "@apiUrl/api/Users/GetSingleUser/" + id,
+                contentType: "application/json; charset=utf-8",
+                headers: {
+                            "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                },
+                dataType: "json",
+                success: function (data) {
+                    if (data) {
+                        $('#firstname').val(data.firstName);
+                        $('#lastname').val(data.lastName);
+                        $('#mobile').val(data.mobile);
+                        $('#email').val(data.email);
+                        $('#username').val(data.userName);
+                        $('#password').val(data.password);
+                        if (data.dateOfBirth != null) {
+                            var dateVal = data.dateOfBirth.substring(0, 10);
+                            $('#dob').datepicker('setDate', new Date(dateVal.replace(/\-/g, '/')));
+                        } else {
+                            $('#dob').val('');
+                        }
+                        roleList(data.userRoleId);
+                        $('#profilePic').attr('src', data.imagePath);
+                    } else {
+                        sweetAlert("Validation Alert!", "Something unexpected!", "warning");
+                    }
+                },
+                error: function (data) {
+                    if (data.status == 401) {
+                        window.location.replace('/Message/TokenExpire');
+                    } else if (data.status == 403) {
+                        window.location.replace('/Message/Unauthorize');
+                    }
+                }
+            });
+        }
+
+        
+
+        function loadUsers() {
+            var table = $('#userTable').DataTable();
+            table.destroy();
+
+            
+
+            table = $('#userTable').dataTable({
+                "paginationType": "full_numbers",
+                "dom": 'Bfrtip',
+                "buttons": ['copy', 'csv', 'excel', 'pdf', 'print'],
+                "searching": false,
+                "paging": true,
+                "sort": true,
+                "info": true,
+                "ajax": {
+                    "url": '@apiUrl/api/Users/GetUserListBySchool/@schoolid/teacher',
+                    "type": "GET",
+                    "dataType": "json",
+                    "headers": {
+                        "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                    },
+                    "error": function (data) {
+                        if (data.status == 401) {
+                            window.location.replace('/Message/TokenExpire');
+                        } else if (data.status == 403) {
+                            window.location.replace('/Message/Unauthorize');
+                        }
+                    }
+                },
+                "order": [],
+                "columns": [
+                    { "data": "firstName", "orderable": true },
+                    { "data": "lastName", "orderable": true },
+                    { "data": "roleName", "orderable": true },
+                    { "data": "mobile", "orderable": true },
+                    { "data": "email", "orderable": true },                   
+                    {
+                        "data": "dateOfBirth",
+                        "orderable": true,
+                        "render": function (data, type, row) {
+                            return row.dateOfBirth!=null?row.dateOfBirth.substring(0, 10):'';
+                        }
+                    },
+                    { "data": "userName", "orderable": true },
+                    {
+                        "orderable": false,
+                        "class": "action_button",
+                        "render": function (data, type, row) {
+                            var id = row.userId;
+                            var actionButtonsHtml = "";
+                            actionButtonsHtml += generateActionButtonForList(id,'userModal');
+                            return actionButtonsHtml;
+                        }
+                    }
+                ]
+            });
+        }
+
+        function roleList(id) {
+            var opt = '';
+            $.ajax({
+                type: "GET",
+                url: "@apiUrl/api/Users/GetUserRoleListByName/teacher",
+                contentType: "application/json; charset=utf-8",
+                headers: {
+                            "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                },
+                dataType: "json",
+                success: function (res) {
+                    //console.log(res.data[0].roleName);
+                    //console.log(res.data.length);
+                    var options = [];
+                    //options.push('<option value="">Select Role</option>');
+                    for (var i = 0; i < res.data.length; i++) {
+                        if (id == res.data[i].userRoleId) {
+                            opt = 'selected'
+                        } else {
+                            opt = '';
+                        }
+                        options.push('<option value="' + res.data[i].userRoleId + '" ' + opt + '>' + res.data[i].roleName+ '</option>');
+                    }
+                    $("#role").html(options.join(''));
+                },
+                error: function (data) {
+                    if (data.status == 401) {
+                        window.location.replace('/Message/TokenExpire');
+                    } else if (data.status == 403) {
+                        window.location.replace('/Message/Unauthorize');
+                    }
+                }
+            });
+        }
+
+        function showAddBtn() {
+            roleList('');
+            $('#btnSave').show();
+            $('#btnUpdate').hide();
+            resetInput('#userModal');
+            resetInputFile('#userModal');
+        }
+
+        function uploadFile(){
+            var totalFiles = document.getElementById('pp').files.length;            
+            if (totalFiles>0) {
+                var formData = new FormData();
+                var files = document.getElementById('pp').files;
+                formData.append("file", files[0]);
+                $.ajax(
+                    {
+                        url: "/Upload/ImgUpload",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        async:false,
+                        type: "POST",
+                        success: function (data) {
+                            imgPath = data;
+                            $('#profilePic').attr('src', imgPath);
+                            resetInputFile('#userModal');
+                        },
+                        error: function (data) {
+                            window.location.replace('/Message/SessionExpire');
+                        }
+                    }
+                );
+            }
+
+        }
+    </script>
+}

@@ -1,0 +1,66 @@
+﻿<div class="row float-right">
+    <a href="/bookorder/create" class="btn btn-primary mb-1 mr-3">Add New </a>
+    
+    
+
+</div>
+<div class="table-responsive">
+    <table id="bookorder" class="table table-striped table-bordered table-hover table-full-width">
+        <thead>
+            <tr>
+                <th>School</th>
+                <th>Class</th>
+                <th>Date</th>
+                <th>Quantity</th>
+                <th>orderAmount</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+@section scripts{
+    <script>
+        $(function () {
+            loadRoles();
+
+                });
+function loadRoles() {
+            var table = $('#bookorder').DataTable();
+            table.destroy();
+            console.log((@Html.Raw(@ViewBag.Data)));
+            table = $('#bookorder').dataTable({
+                "paginationType": "full_numbers",
+                "dom": 'Bfrtip',
+                //"buttons": ['copy', 'csv', 'excel', 'pdf', 'print'],
+                "searching": false,
+                "paging": true,
+                "sort": true,
+                "info": true,
+                "data": (@Html.Raw(@ViewBag.Data.data)),
+                
+                "order": [],
+                "columns": [
+                    { "data": "schoolName", "orderable": true },
+                    { "data": "className", "orderable": true },
+                    { "data": "orderDate", "orderable": true },
+                    { "data": "quantity", "orderable": true },
+                 
+                    { "data": "orderAmount", "orderable": true },
+                    {
+                        "orderable": false,
+                        "class": "action_button",
+                        "render": function (data, type, row) {
+                            var id = row.bookOrderId;
+                            var actionButtonsHtml = "";
+                            actionButtonsHtml += generateActionButtonForList(id, 'roleModal');
+                            return actionButtonsHtml;
+                        }
+                    }
+                ]
+            });
+        }
+
+
+                        </script>
+                        }

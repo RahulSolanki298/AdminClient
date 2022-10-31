@@ -1,0 +1,116 @@
+﻿@using Microsoft.Extensions.Configuration;
+@using Microsoft.AspNetCore.Http
+@inject IConfiguration Configuration;
+@{
+    ViewBag.Title = "Menu";
+    string apiUrl = Configuration.GetValue<string>("WebAPIBaseUrl");
+}
+<div class="row float-right">
+    <a href="/Student/create" class="btn btn-primary mb-1 mr-3">Add New </a>
+</div>
+<div class="table-responsive">
+    <table id="student" class="table table-striped table-bordered table-hover table-full-width">
+        <thead>
+            <tr>
+                <th>SchoolName</th>
+                <th>ClassName</th>
+                <th>FirstName</th>
+                <th>MiddleName</th>
+                <th>LastName</th>
+                <th>Email</th>
+                <th>Mobile No</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+@section scripts{
+    <script>
+        $(function () {
+            loadRoles();
+
+            $('#student tbody').on('click', 'button[data-target="#delete"]', function () {
+                var id = $(this).data('id');
+                swal({
+                    html: true,
+                    title: "Are you sure?",
+                    text: "You will not be able to recover this data!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, confirm it!",
+                    closeOnConfirm: false
+                }, function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "@apiUrl/api/Users/DeleteSingleUser/" + id,
+                        contentType: "application/json; charset=utf-8",
+                        headers: {
+                            "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                        },
+                        dataType: "json",
+                        success: function (data, statusText, xhr) {
+                            if (xhr.status == 200) {
+                                $('#student').DataTable().ajax.reload(null, false);
+                                sweetAlert({
+                                    html: true,
+                                    title: "Student",
+                                    text: "Successfully deleted!",
+                                    type: "success"
+                                });
+                            } else if (xhr.status == 202) {
+                                sweetAlert("Validation Alert!", data.responseMsg, "warning");
+                            } else {
+                                sweetAlert("Validation Alert!", "Something unexpected!", "warning");
+                            }
+                        },
+                        error: function (data) {
+                            if (data.status == 401) {
+                                window.location.replace('/Message/TokenExpire');
+                            } else if (data.status == 403) {
+                                window.location.replace('/Message/Unauthorize');
+                            }
+                        }
+                    });
+                });
+            });
+
+        });
+        function loadRoles() {
+            var table = $('#student').DataTable();
+            table.destroy();
+            console.log((@Html.Raw(@ViewBag.Data)));
+            table = $('#student').dataTable({
+                "paginationType": "full_numbers",
+                "dom": 'Bfrtip',
+                "buttons": ['copy', 'csv', 'excel', 'pdf', 'print'],
+                "searching": false,
+                "paging": true,
+                "sort": true,
+                "info": true,
+                "data": (@Html.Raw(@ViewBag.Data.data)),
+                "order": [],
+                "columns": [
+                    { "data": "schoolName", "orderable": true },
+                    { "data": "className", "orderable": true },
+                    { "data": "firstName", "orderable": true },
+                    { "data": "middleName", "orderable": true },
+                    { "data": "lastName", "orderable": true },
+                    { "data": "email", "orderable": true },
+                    { "data": "mobile", "orderable": true },
+                    {
+                        "orderable": false,
+                        "class": "action_button",
+                        "render": function (data, type, row) {
+                            var id = row.studentId;
+                            var actionButtonsHtml = "<button class='btn btn-secondary btn-sm rounded-circle' title='Delete' data-target='#delete' data-title='Delete' data-toggle='modal' data-id='" + id + "'><i class='material-icons'>delete</i></button>";
+                            actionButtonsHtml += "<a href='/Student/Create/" + id + "' class='btn btn-secondary btn-sm rounded-circle'> <i class='material-icons'>edit</i></a>";
+                            return actionButtonsHtml;
+                        }
+                    }
+                ]
+            });
+        }
+    </script>
+  }

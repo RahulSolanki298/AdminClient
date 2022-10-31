@@ -1,0 +1,546 @@
+﻿@using Microsoft.Extensions.Configuration;
+@using Microsoft.AspNetCore.Http
+@inject IConfiguration Configuration;
+
+@{
+    ViewBag.Title = "Videos";
+    string apiUrl = Configuration.GetValue<string>("WebAPIBaseUrl");
+}
+
+<div class="row float-right">
+    <button type="button" onclick="showAddBtn()" data-toggle="modal" data-target="#userModal" class="btn btn-primary mb-1 mr-3">Add New</button>
+</div>
+<div class="table-responsive">
+    <table id="userTable" class="table table-striped table-bordered table-hover table-full-width">
+        <thead>
+            <tr>
+                <th> VideoName</th>
+                <th>VideoCategory</th>
+                @*<th>Class</th>
+                <th>Subject</th>
+                <th>Teaching Language</th>
+                <th>VideoThumbnail</th>*@
+
+                <th>Actions</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+<div id="userModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+            </div>
+            <div class="modal-body">
+                <form action="#" role="form" class="validate" id="formPost" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="control-label">VideoTitle<i class="fas fa-exclamation-triangle text-danger fa-sm"></i></label>
+                                        <input type="text" class="form-control" id="ebooktitle" autocomplete="off" required />
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="text-center">
+                                        <img id="profilePic" src="" width="90" class="rounded-circle" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Video</label>
+                                        <div class="custom-file mt-0">
+                                            <input type="file" class="custom-file-input" id="pp" name="pp">
+                                            <label class="custom-file-label" for="proPic">Choose file</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Video Category<i class="fas fa-exclamation-triangle text-danger fa-sm"></i></label>
+                                        <select id="role" class="custom-select" required></select>
+                                    </div>
+                                </div>
+                                  <div class="col-lg-2">
+                                    <div class="text-center">
+                                        <img id="profilePic" src="" width="90" class="rounded-circle" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Video Thumbnail</label>
+                                        <div class="custom-file mt-0">
+                                            <input type="file" class="custom-file-input" id="pp" name="pp">
+                                            <label class="custom-file-label" for="proPic">Choose file</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                          
+
+                           
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <button type="button" id="btnSave" class="btn btn-primary" style="display:none">Save</button>
+                                    <button type="button" id="btnUpdate" class="btn btn-primary" style="display:none">Update</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section scripts{
+    <script>
+
+        var userIdForUpdate;
+        var imgPath;
+
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            if (checkvideoFormat(fileName)) {
+                $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+            } else {
+                sweetAlert("Validation Alert!", "Upload Image file only!", "warning");
+                resetInputFile('#userModal');
+            }
+
+        });
+
+        $(function () {
+            loadUsers();
+
+            $('#userTable tbody').on('click', 'button[data-target="#userModal"]', function () {
+                var id = $(this).data('id');
+                loadSingleUser(id);
+                $('#btnUpdate').show();
+                $('#btnSave').hide();
+                userIdForUpdate = id;
+            });
+
+            $('#userTable tbody').on('click', 'button[data-target="#delete"]', function () {
+                var id = $(this).data('id');
+
+                swal({
+                    html: true,
+                    title: "Are you sure?",
+                    text: "You will not be able to recover this data!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, confirm it!",
+                    closeOnConfirm: false
+                }, function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "@apiUrl/api/Videos/DeleteVideos/" + id,
+                        contentType: "application/json; charset=utf-8",
+                        headers: {
+                            "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                        },
+                        dataType: "json",
+                        success: function (data, statusText, xhr) {
+                            if (xhr.status == 200) {
+                                $('#userTable').DataTable().ajax.reload(null, false);
+                                sweetAlert({
+                                    html: true,
+                                    title: "Video",
+                                    text: "Successfully deleted!",
+                                    type: "success"
+                                });
+                            } else if (xhr.status == 202) {
+                                sweetAlert("Validation Alert!", data.responseMsg, "warning");
+                            } else {
+                                sweetAlert("Validation Alert!", "Something unexpected!", "warning");
+                            }
+                        },
+                        error: function (data) {
+                            if (data.status == 401) {
+                                window.location.replace('/Message/TokenExpire');
+                            } else if (data.status == 403) {
+                                window.location.replace('/Message/Unauthorize');
+                            }
+                        }
+                    });
+                });
+            });
+
+            $("#btnSave").click(function (e) {
+                if (!document.getElementById("formPost").checkValidity()) {
+                    e.preventDefault();
+                } else {
+                    imgPath = '';
+                    thumbPath = '';
+                    uploadFile();
+
+                    var model = {
+                        //userRoleId: parseInt($("#role").val()),
+                        videoName: $.trim($("#ebooktitle").val()),
+                        videoCategoryId: parseInt($("#role").val()),
+                        // subjectId: parseInt($("#subject").val()),
+                        // teachingMediumId: parseInt($("#teachingmedium").val()),
+                        videoThumbnail: thumbPath,
+                        videoPath: imgPath,
+                        isActive:1,
+                       // chapterDisplayOrder: $.trim($("#displayorder").val()),
+                        //password: $.trim($("#password").val()),
+                        //addedBy:Context.Session.GetInt32("UserId"),
+                    }
+                    console.log(model);
+
+                    $.ajax({
+                        type: "POST",
+                        url: "@apiUrl/api/Videos/PostVideos",
+                        data: JSON.stringify(model),
+                        contentType: "application/json; charset=utf-8",
+                        headers: {
+                            "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                        },
+                        dataType: "json",
+                        success: function (data, statusText, xhr) {
+                            //console.log(xhr.status);
+                            //console.log(data);
+                            if (xhr.status === 200) {
+                                $('#userTable').DataTable().ajax.reload(null, false);
+                                sweetAlert({
+                                    html: true,
+                                    title: "Video",
+                                    text: "Successfully created!",
+                                    type: "success"
+                                });
+                            } else if (data.status === "duplicate") {
+                                sweetAlert("Validation Alert!", data.responseMsg, "warning");
+                            } else if (data.status === "error") {
+                                sweetAlert("Validation Alert!", data.responseMsg, "warning");
+                            } else {
+                                sweetAlert("Validation Alert!", "Something unexpected!", "warning");
+                            }
+                        },
+                        error: function (data) {
+                            // alert(data);
+                            if (data.status == 401) {
+                                window.location.replace('/Message/TokenExpire');
+                            } else if (data.status == 403) {
+                                window.location.replace('/Message/Unauthorize');
+                            } else if (data.status == 400) {
+                                sweetAlert("Validation Alert!", "Please check input data!", "warning");
+                            }
+                        }
+                    });
+                }
+            });
+
+            $("#btnUpdate").click(function (e) {
+                if (!document.getElementById("formPost").checkValidity()) {
+                    e.preventDefault();
+                } else {
+                    imgPath = '';
+                    var currentImageSrc = '';
+                    currentImageSrc = $('#profilePic').attr('src');
+
+                    if ($('.custom-file-label').text() != '' && $('.custom-file-label').text() != 'Choose file') {
+                        uploadFile();
+                    } else if (currentImageSrc != '') {
+                        imgPath = currentImageSrc;
+                    }
+                    var model = {
+                        VideoId: userIdForUpdate,
+                        //userRoleId: parseInt($("#role").val()),
+                        VideoName: $.trim($("#ebooktitle").val()),
+                        //chapterDisplayOrder: $.trim($("#displayorder").val()),
+                        VideoCategoryId: parseInt($("#role").val()),
+                        // subjectId: parseInt($("#subject").val()),
+                        // teachingMediumId: parseInt($("#teachingmedium").val()),
+                        VideoPath: imgPath,
+                        // userName: $.trim($("#username").val()),
+                        // password: $.trim($("#password").val()),
+                        // lastUpdatedBy:Context.Session.GetInt32("UserId"),
+                    }
+                    console.log(model);
+                    $.ajax({
+                        type: "POST",
+                        url: "@apiUrl/api/Videos/PutVideos",
+                        data: JSON.stringify(model),
+                        contentType: "application/json; charset=utf-8",
+                        headers: {
+                            "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                        },
+                        dataType: "json",
+                        success: function (data, statusText, xhr) {
+                            if (xhr.status == 200) {
+                                $('#userTable').DataTable().ajax.reload(null, false);
+                                sweetAlert({
+                                    html: true,
+                                    title: "video",
+                                    text: "Successfully updated!",
+                                    type: "success"
+                                });
+                            } else if (xhr.status == 202) {
+                                sweetAlert("Validation Alert!", data.responseMsg, "warning");
+                            } else {
+                                sweetAlert("Validation Alert!", "Something unexpected!", "warning");
+                            }
+                        },
+                        error: function (data) {
+                            if (data.status == 401) {
+                                window.location.replace('/Message/TokenExpire');
+                            } else if (data.status == 403) {
+                                window.location.replace('/Message/Unauthorize');
+                            } else if (data.status == 400) {
+                                sweetAlert("Validation Alert!", "Please check input data!", "warning");
+                            }
+                        }
+                    });
+                }
+            });
+
+        });
+
+        function loadSingleUser(id) {
+            $.ajax({
+                type: "GET",
+                url: "@apiUrl/api/Videos/GetVideos/" + id,
+                contentType: "application/json; charset=utf-8",
+                headers: {
+                    "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                },
+                dataType: "json",
+                success: function (data) {
+                    if (data) {
+                        $('#ebooktitle').val(data.videoName);
+                        // $('#lastname').val(data.classId);
+                        // $('#mobile').val(data.subjectId);
+                        //$('#email').val(data.teachingMediumId);
+                        //$('#displayorder').val(data.chapterDisplayOrder);
+                        // $('#password').val(data.password);
+
+                        roleList(data.VideoCategoryId);
+                        //subjectList(data.subjectId);
+                        //teachingMediumList(data.teachingMediumId)
+                        $('#profilePic').attr('src', data.imagePath);
+                    } else {
+                        sweetAlert("Validation Alert!", "Something unexpected!", "warning");
+                    }
+                },
+                error: function (data) {
+                    if (data.status == 401) {
+                        window.location.replace('/Message/TokenExpire');
+                    } else if (data.status == 403) {
+                        window.location.replace('/Message/Unauthorize');
+                    }
+                }
+            });
+        }
+
+        function loadUsers() {
+            var table = $('#userTable').DataTable();
+            table.destroy();
+
+            table = $('#userTable').dataTable({
+                "paginationType": "full_numbers",
+                "dom": 'Bfrtip',
+                "buttons": ['copy', 'csv', 'excel', 'pdf', 'print'],
+                "searching": false,
+                "paging": true,
+                "sort": true,
+                "info": true,
+                "ajax": {
+                    "url": '@apiUrl​/api/Videos/GetVideos',
+                    "type": "GET",
+                    "dataType": "json",
+                    "headers": {
+                        "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                    },
+                    "error": function (data) {
+                        if (data.status == 401) {
+                            window.location.replace('/Message/TokenExpire');
+                        } else if (data.status == 403) {
+                            window.location.replace('/Message/Unauthorize');
+                        }
+                    }
+                },
+                "order": [],
+                "columns": [
+                    { "data": "videoName", "orderable": true },
+                    { "data": "videoCategories.videoCategoryName", "orderable": true },
+                    //{ "data": "subject.subjectName", "orderable": true },
+                    // { "data": "teachingMedium.teachingMediumName", "orderable": true },
+                    //{ "data": "videoThumbnail", "orderable": true },
+
+
+                    {
+                        "orderable": false,
+                        "class": "action_button",
+                        "render": function (data, type, row) {
+                            var id = row.videoId;
+                            var actionButtonsHtml = "";
+                            actionButtonsHtml += generateActionButtonForList(id, 'userModal');
+                            return actionButtonsHtml;
+                        }
+                    }
+                ]
+            });
+
+        }
+
+        function roleList(id) {
+            var opt = '';
+            $.ajax({
+                type: "GET",
+                url: "@apiUrl/api/VideoCategories/GetVideoCategories",
+                contentType: "application/json; charset=utf-8",
+                headers: {
+                    "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                },
+                dataType: "json",
+                success: function (res) {
+                    console.log(res.data[0].videoCategoryName);
+                    console.log(res.data.length);
+                    var options = [];
+                    options.push('<option value="">Select Category</option>');
+                    for (var i = 0; i < res.data.length; i++) {
+                        if (id == res.data[i].VideoCategoryId) {
+                            opt = 'selected'
+                        } else {
+                            opt = '';
+                        }
+                        options.push('<option value="' + res.data[i].videoCategoryId + '" ' + opt + '>' + res.data[i].videoCategoryName + '</option>');
+                    }
+                    $("#role").html(options.join(''));
+                },
+                error: function (data) {
+                    if (data.status == 401) {
+                        window.location.replace('/Message/TokenExpire');
+                    } else if (data.status == 403) {
+                        window.location.replace('/Message/Unauthorize');
+                    }
+                }
+            });
+        }
+
+        function subjectList(id) {
+            var opt = '';
+            $.ajax({
+                type: "GET",
+                url: "@apiUrl/api/Subjects/GetSubjects",
+                contentType: "application/json; charset=utf-8",
+                headers: {
+                    "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                },
+                dataType: "json",
+                success: function (res) {
+                    //console.log(res.data[0].roleName);
+                    //console.log(res.data.length);
+                    var options = [];
+                    options.push('<option value="">Select Role</option>');
+                    for (var i = 0; i < res.data.length; i++) {
+                        if (id == res.data[i].subjectId) {
+                            opt = 'selected'
+                        } else {
+                            opt = '';
+                        }
+                        options.push('<option value="' + res.data[i].subjectId + '" ' + opt + '>' + res.data[i].subjectName + '</option>');
+                    }
+                    $("#subject").html(options.join(''));
+                },
+                error: function (data) {
+                    if (data.status == 401) {
+                        window.location.replace('/Message/TokenExpire');
+                    } else if (data.status == 403) {
+                        window.location.replace('/Message/Unauthorize');
+                    }
+                }
+            });
+        }
+
+        function teachingMediumList(id) {
+            var opt = '';
+            $.ajax({
+                type: "GET",
+                url: "@apiUrl​/api/TeachingMediums/GetTeachingMedia",
+                contentType: "application/json; charset=utf-8",
+                headers: {
+                    "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                },
+                dataType: "json",
+                success: function (res) {
+                    //console.log(res.data[0].roleName);
+                    //console.log(res.data.length);
+                    var options = [];
+                    options.push('<option value="">Select Role</option>');
+                    for (var i = 0; i < res.data.length; i++) {
+                        if (id == res.data[i].teachingMediumId) {
+                            opt = 'selected'
+                        } else {
+                            opt = '';
+                        }
+                        options.push('<option value="' + res.data[i].teachingMediumId + '" ' + opt + '>' + res.data[i].teachingMediumName + '</option>');
+                    }
+                    $("#teachingmedium").html(options.join(''));
+                },
+                error: function (data) {
+                    if (data.status == 401) {
+                        window.location.replace('/Message/TokenExpire');
+                    } else if (data.status == 403) {
+                        window.location.replace('/Message/Unauthorize');
+                    }
+                }
+            });
+        }
+
+        function showAddBtn() {
+            roleList('');
+            //subjectList('');
+          //  teachingMediumList('');
+            $('#btnSave').show();
+            $('#btnUpdate').hide();
+            resetInput('#userModal');
+            resetInputFile('#userModal');
+        }
+
+        function uploadFile() {
+            var totalFiles = document.getElementById('pp').files.length;
+            if (totalFiles > 0) {
+                var formData = new FormData();
+                var files = document.getElementById('pp').files;
+                formData.append("file", files[0]);
+                $.ajax(
+                    {
+                        url: "/Upload/ImgUpload",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        async: false,
+                        type: "POST",
+                        success: function (data) {
+                            imgPath = data;
+                            $('#profilePic').attr('src', imgPath);
+                            resetInputFile('#userModal');
+                        },
+                        error: function (data) {
+                            window.location.replace('/Message/SessionExpire');
+                        }
+                    }
+                );
+            }
+
+        }
+    </script>
+}

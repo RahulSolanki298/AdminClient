@@ -1,0 +1,304 @@
+﻿@using Microsoft.Extensions.Configuration;
+@using Microsoft.AspNetCore.Http
+@inject IConfiguration Configuration;
+
+@{
+    ViewBag.Title = "Dashboard";
+    string apiUrl = Configuration.GetValue<string>("WebAPIBaseUrl");
+}
+
+<section id="userStatus" style="display:none">
+    <div class="row">
+        <div class="col-xl-3 col-sm-6 p-2">
+            <div class="card card-common">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <i class="fas fa-users fa-3x text-info"></i>
+                        <div class="text-right text-secondary">
+                            <h5>Total</h5>
+                            <h3 id="totalUser"></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 p-2">
+            <div class="card card-common">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <i class="fas fa-check fa-3x text-success"></i>
+                        <div class="text-right text-secondary">
+                            <h5>Active</h5>
+                            <h3 id="activeUser"></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 p-2">
+            <div class="card card-common">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <i class="fas fa-times fa-3x text-danger"></i>
+                        <div class="text-right text-secondary">
+                            <h5>In-active</h5>
+                            <h3 id="inActiveUser"></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 p-2">
+            <div class="card card-common">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <i class="fas fa-user-shield fa-3x text-secondary"></i>
+                        <div class="text-right text-secondary">
+                            <h5>Admin</h5>
+                            <h3 id="adminUser"></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    <div class="row">
+        <div class="col-sm-6">
+            <canvas id="dateChart" width="400" height="400"></canvas>
+        </div>
+        <div class="col-sm-6">
+            <canvas id="pieChart" width="400" height="400"></canvas>
+        </div>
+    </div>
+    <div class="row">     
+        <div class="col-sm-6">
+            <canvas id="monthChart" width="400" height="400"></canvas>
+        </div>
+        <div class="col-sm-6">
+            <canvas id="yearChart" width="400" height="400"></canvas>
+        </div>
+    </div>
+</section>
+
+@section scripts{
+    <script>
+        var dateChartData = null, pieChartData = null, monthChartData = null, yearChartData=null;
+        $(function () {
+            if ('@Context.Session.GetString("RoleName")'== 'Admin') {
+                $('#userStatus').show();
+                loadUserStatus();
+            }
+            loadDateChart();
+            loadPieChart();
+            loadMonthChart();
+            loadYearChart();
+
+            new Chart($('#dateChart'), {
+                type: 'line',
+                data: {
+                    labels: dateChartData.map(x => x.date),
+                    datasets: [
+                        {
+                            label: 'Date wise Login',
+                            backgroundColor: '#343a40',
+                            data: dateChartData.map(x => x.count)
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            new Chart($('#pieChart'), {
+                type: 'pie',
+                data: {
+                    labels: pieChartData.map(x => x.roleName),
+                    datasets: [
+                        {                          
+                            backgroundColor: '#343a40',
+                            data: pieChartData.map(x => x.count)
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            new Chart($('#monthChart'), {
+                type: 'bar',
+                data: {
+                    labels: monthChartData.map(x => x.month),
+                    datasets: [
+                        {
+                            label: 'Month wise Login',
+                            backgroundColor: '#343a40',
+                            data: monthChartData.map(x => x.count)
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+
+            new Chart($('#yearChart'), {
+                type: 'bar',
+                data: {
+                    labels: yearChartData.map(x => x.year),
+                    datasets: [
+                        {
+                            label: 'Year wise Login',
+                            backgroundColor: '#343a40',
+                            data: yearChartData.map(x => x.count)
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        });
+
+        function loadDateChart() {
+            $.ajax({
+                type: "GET",
+                url: "@apiUrl/api/Users/GetLogInSummaryByDate/@Context.Session.GetInt32("UserId")",
+                contentType: "application/json; charset=utf-8",
+                headers: {
+                       "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                },
+                dataType: "json",
+                async:false,
+                success: function (data) {
+                    //console.log(data)
+                    dateChartData = data;
+                },
+                error: function (data) {
+                    if (data.status == 401) {
+                        window.location.replace('/Message/TokenExpire');
+                    } else if (data.status == 403) {
+                        window.location.replace('/Message/Unauthorize');
+                    }
+                }
+            });
+        }
+        function loadPieChart() {
+            $.ajax({
+                type: "GET",
+                url: "@apiUrl/api/Users/GetRoleWiseUser",
+                contentType: "application/json; charset=utf-8",
+                headers: {
+                       "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                },
+                dataType: "json",
+                async:false,
+                success: function (data) {
+                    //console.log(data)
+                    pieChartData = data;
+                },
+                error: function (data) {
+                    if (data.status == 401) {
+                        window.location.replace('/Message/TokenExpire');
+                    } else if (data.status == 403) {
+                        window.location.replace('/Message/Unauthorize');
+                    }
+                }
+            });
+        }
+        function loadMonthChart() {
+            $.ajax({
+                type: "GET",
+                url: "@apiUrl/api/Users/GetLogInSummaryByMonth/@Context.Session.GetInt32("UserId")",
+                contentType: "application/json; charset=utf-8",
+                headers: {
+                       "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                },
+                dataType: "json",
+                async:false,
+                success: function (data) {
+                    //console.log(data)
+                    monthChartData = data;
+                },
+                error: function (data) {
+                    if (data.status == 401) {
+                        window.location.replace('/Message/TokenExpire');
+                    } else if (data.status == 403) {
+                        window.location.replace('/Message/Unauthorize');
+                    }
+                }
+            });
+        }
+        function loadYearChart() {
+            $.ajax({
+                type: "GET",
+                url: "@apiUrl/api/Users/GetLogInSummaryByYear/@Context.Session.GetInt32("UserId")",
+                contentType: "application/json; charset=utf-8",
+                headers: {
+                       "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                },
+                dataType: "json",
+                async:false,
+                success: function (data) {
+                    //console.log(data)
+                    yearChartData = data;
+                },
+                error: function (data) {
+                    if (data.status == 401) {
+                        window.location.replace('/Message/TokenExpire');
+                    } else if (data.status == 403) {
+                        window.location.replace('/Message/Unauthorize');
+                    }
+                }
+            });
+        }
+
+        function loadUserStatus() {
+            $.ajax({
+                type: "GET",
+                url: "@apiUrl/api/Users/UserStatus",
+                contentType: "application/json; charset=utf-8",
+                headers: {
+                       "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                },
+                dataType: "json",
+                success: function (data) {
+                    if (data) {
+                        $('#totalUser').text(data.totalUser);
+                        $('#activeUser').text(data.activeUser);
+                        $('#inActiveUser').text(data.inActiveUser);
+                        $('#adminUser').text(data.adminUser);
+                    } else {
+                        sweetAlert("Validation Alert!", "Something unexpected!", "warning");
+                    }
+                },
+                error: function (data) {
+                    if (data.status == 401) {
+                        window.location.replace('/Message/TokenExpire');
+                    } else if (data.status == 403) {
+                        window.location.replace('/Message/Unauthorize');
+                    }
+                }
+            });
+        }
+    </script>
+
+}

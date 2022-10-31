@@ -1,0 +1,117 @@
+﻿@using Microsoft.Extensions.Configuration;
+@using Microsoft.AspNetCore.Http
+@inject IConfiguration Configuration;
+@{
+    ViewBag.Title = "School List";
+    string apiUrl = Configuration.GetValue<string>("WebAPIBaseUrl");
+}
+
+<div class="row float-right">
+    <a href="/School/create" class="btn btn-primary mb-1 mr-3">Add New </a>
+</div>
+<div class="table-responsive">
+    <table id="schoolList" class="table table-striped table-bordered table-hover table-full-width">
+        <thead>
+            <tr>
+                <th>SchoolName</th>
+                <th>SchoolCity</th>
+                <th>schoolPhone</th>
+                <th>schoolEmail</th>
+                <th>SchoolWebsite</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+@section scripts{
+    <script>
+        $(function () {
+            loadRoles();
+            $('#schoolList tbody').on('click', 'button[data-target="#delete"]', function () {
+                debugger;
+                var id = $(this).data('id');
+                swal({
+                    html: true,
+                    title: "Are you sure?",
+                    text: "You will not be able to recover this data!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, confirm it!",
+                    closeOnConfirm: false
+                }, function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "@apiUrl/api/Schools/DeleteSchool/" + id,
+                        contentType: "application/json; charset=utf-8",
+                        headers: {
+                            "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                        },
+                        dataType: "json",
+                        success: function (data, statusText, xhr) {
+                            if (xhr.status == 200) {
+                                $('#schoolList').DataTable().ajax.reload(null, false);
+                                sweetAlert({
+                                    html: true,
+                                    title: "School",
+                                    text: "Successfully deleted!",
+                                    type: "success"
+                                });
+                            } else if (xhr.status == 202) {
+                                sweetAlert("Validation Alert!", data.responseMsg, "warning");
+                            } else {
+                                sweetAlert("Validation Alert!", "Something unexpected!", "warning");
+                            }
+                        },
+                        error: function (data) {
+                            if (data.status == 401) {
+                                window.location.replace('/Message/TokenExpire');
+                            } else if (data.status == 403) {
+                                window.location.replace('/Message/Unauthorize');
+                            }
+                        }
+                    });
+                });
+            });
+        });
+        function loadRoles() {
+            var table = $('#schoolList').DataTable();
+            table.destroy();
+            console.log((@Html.Raw(@ViewBag.Data)));
+            table = $('#schoolList').dataTable({
+                "paginationType": "full_numbers",
+                "dom": 'Bfrtip',
+                //"buttons": ['copy', 'csv', 'excel', 'pdf', 'print'],
+                "searching": false,
+                "paging": true,
+                "sort": true,
+                "info": true,
+                "data": (@Html.Raw(@ViewBag.Data.data)),
+
+                "order": [],
+                "columns": [
+                    { "data": "schoolName", "orderable": true },
+                    { "data": "schoolCity", "orderable": true },
+                    { "data": "schoolPhone", "orderable": true },
+                    { "data": "schoolEmail", "orderable": true },
+
+                    { "data": "schoolWebsite", "orderable": true },
+                    {
+                        "orderable": false,
+                        "class": "action_button",
+                        "render": function (data, type, row) {
+                            var id = row.schoolId;
+                            var actionButtonsHtml = "<button class='btn btn-secondary btn-sm rounded-circle' title='Delete' data-target='#delete' data-title='Delete' data-toggle='modal' data-id='" + id + "'><i class='material-icons'>delete</i></button>";
+                            actionButtonsHtml += "<a href='/School/Create/" + id + "' class='btn btn-secondary btn-sm rounded-circle'><i class='material-icons'>edit</i></a>";
+                            // actionButtonsHtml += generateActionButtonForList(id, 'roleModal');
+                            return actionButtonsHtml;
+                        }
+                    }
+                ]
+            });
+        }
+
+
+    </script>
+                        }

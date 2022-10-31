@@ -1,0 +1,33 @@
+﻿@model AdminClient.ViewModels.StudentModel
+
+<form action="/Student/SaveStudentData" method="post">
+    <input type="hidden" name="SchoolId" value="@Model.StudentId" />
+    <input name="FirstName" placeholder="FirstName" value="@Model.FirstName" />
+    <input name="MiddleName" placeholder="MiddleName" value="@Model.MiddleName" />
+    <input name="LastName" placeholder="LastName" value="@Model.LastName" />
+    <input name="Mobile" placeholder="Mobile" value="@Model.Mobile" />
+    <input name="Email" placeholder="Email" value="@Model.Email" />
+    <input name="DateOfBirth" placeholder="DateOfBirth" value="@Model.DateOfBirth" />
+    <input name="FatherFirstName" placeholder="Father First Name" value="@Model.FatherFirstName" />
+    <input name="FatherMiddleName" placeholder="Father Middle Name" value="@Model.FatherMiddleName" />
+    <input name="FatherLastName" placeholder="Father Last Name" value="@Model.FatherLastName" />
+    <input name="FatherMobile" placeholder="Father Mobile" value="@Model.FatherMobile" />
+    <input name="FatherEmail" placeholder="FatherEmail" value="@Model.FatherEmail" />
+    <input name="MotherFirstName" placeholder="Mother First Name" value="@Model.MotherFirstName" />
+    <input name="MotherMiddleName" placeholder="Mother Middle Name" value="@Model.MotherMiddleName" />
+    <input name="MotherLastName" placeholder="Mother Last Name" value="@Model.MotherLastName" />
+    <input name="MotherMobile" placeholder="Mother Mobile" value="@Model.MotherMobile" />
+    <input name="MotherEmail" placeholder="Mother Email" value="@Model.MotherEmail" />
+    <input name="GuardianFirstName" placeholder="Guardian First Name" value="@Model.GuardianFirstName" />
+    <input name="GuardianMiddleName" placeholder="Guardian Middle Name" value="@Model.GuardianMiddleName" />
+    <input name="GuardianLastName" placeholder="Guardian Last Name" value="@Model.GuardianLastName" />
+    <input name="GuardianMobile" placeholder="Guardian Mobile" value="@Model.GuardianMobile" />
+    <input name="GuardianEmail" placeholder="Guardian Email" value="@Model.GuardianEmail" />
+    
+    <input type="submit" title="Submit" />
+</form>
+
+
+<script type="text/javascript">
+   
+</script>
