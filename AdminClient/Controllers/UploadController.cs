@@ -5,10 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using AdminClient.AppHelper.PublitioApi;
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
+using AdminClient.AppHelper.PublitioApi;
 
 namespace AdminClient.Controllers
 {
@@ -16,7 +15,7 @@ namespace AdminClient.Controllers
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly ILogger<UploadController> _logger;
-
+        PublitioApi publitioApi = new PublitioApi("Vj1qW6Qpaxrsemv1wbtu", "z2Vq4MQHNGXdVqXxiBfJSaL5XgSAg1NT");
         public UploadController(IWebHostEnvironment hostingEnvironment,
                               ILogger<UploadController> logger)
         {
@@ -26,32 +25,28 @@ namespace AdminClient.Controllers
         [HttpPost]
         public async Task<string> ImgUpload(IFormFile file)
         {
-            PublitioApi publitioApi = new PublitioApi("Vj1qW6Qpaxrsemv1wbtu", "z2Vq4MQHNGXdVqXxiBfJSaL5XgSAg1NT");
             try
             {
-                using (var ImgFile = System.IO.File.OpenRead(file.FileName))
+                string filepath = String.Empty;
+                using (var readfile = file.OpenReadStream())// System.IO.File.OpenRead(file))
                 {
-                    var res1 = await publitioApi.UploadFileAsync("/images/pp/", new Dictionary<string, object> { ["title"] = "XX" }, ImgFile);
-                    //Console.WriteLine(res1);
+                    var res1 = await publitioApi.UploadFileAsync(
+                          "files/create",
+                          new Dictionary<string, object> { ["title"] = "XX" },
+                          readfile);
+                    filepath = (string)res1.Root["url_preview"];
+                    Console.WriteLine(res1);
                 }
-                // List files
-                var res = await publitioApi.GetAsync("/images/pp/", new Dictionary<string, object> { ["limit"] = 3 });
 
-                //string filename = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                string filename = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                //FileStream(file,FileMode.Open);
+                filename = EnsureCorrectFilename(filename);
 
-                //filename = EnsureCorrectFilename(filename);
-
-                // Get the ID of the first file
-                var files = (JArray)res["files"];
-                var firstFile = (JObject)files[0];
-                var id = (string)firstFile["id"];
-                // Console.WriteLine(id);
-
-                //string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images/pp");
-                //string uniqueFileName = Guid.NewGuid().ToString() + "_" + filename;
-                //string imagePath = Path.Combine(uploadsFolder, uniqueFileName);
-                //file.CopyTo(new FileStream(imagePath, FileMode.Create));
-                return "/images/pp/" + id;
+                string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images/pp");
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + filename;
+                string imagePath = Path.Combine(uploadsFolder, uniqueFileName);
+                file.CopyTo(new FileStream(imagePath, FileMode.Create));
+                return filepath;// "/images/pp/" + uniqueFileName;
             }
             catch (Exception exception)
             {

@@ -1,109 +1,232 @@
 ﻿@model AdminClient.ViewModels.SchoolModel
+@using Microsoft.Extensions.Configuration;
+@using Microsoft.AspNetCore.Http
 
-<form action="/School/SaveSchool" method="post">
-    <input type="hidden" name="SchoolId" value="@Model.SchoolId" />
-    <input name="SchoolName" placeholder="School Name" value="@Model.SchoolName" />
-    <input name="SchoolAddress" placeholder="School Address" value="@Model.SchoolAddress" />
-    <input name="SchoolCity" placeholder="School City" value="@Model.SchoolCity" />
-    <input name="SchoolPinCode" placeholder="School Pin Code" value="@Model.SchoolPinCode" />
-    <input name="SchoolState" placeholder="School State" value="@Model.SchoolState" />
-    <input name="SchoolPhone" placeholder="SchoolPhone" value="@Model.SchoolPhone" />
-    <input name="EstablishmentDate" placeholder="Establishment Date" value="@Model.EstablishmentDate" />
-    <input name="AcademicYear" placeholder="Academy Year" value="@Model.AcademicYear" />
+@inject IConfiguration Configuration;
+@{
+    ViewBag.Title = "School";
+    string apiUrl = Configuration.GetValue<string>("WebAPIBaseUrl");
+}
 
-    <input name="SchoolCode" placeholder="School Code " value="@Model.SchoolCode"/>
-    <input name="AcademicStartDate" placeholder="Academic Start Date" value="@Model.AcademicStartDate"/>
-    <input name="AcademicEndDate" placeholder="Academic End Date" value="@Model.AcademicEndDate" />
-    <input name="GeoLocation" placeholder="Geo Location" value="@Model.GeoLocation" />
-    <input name="SchoolOwnerFirstName" placeholder="School Owner FirstName" value="@Model.SchoolOwnerFirstName" />
-    <input name="SchoolOwnerMiddelName" placeholder="School Owner MiddelName" value="@Model.SchoolOwnerMiddelName" />
-    <input name="SchoolOwnerLastName" placeholder="School Owner LastName" value="@Model.SchoolOwnerFirstName" />
-    <input name="SchoolOwnerEmail" placeholder="School Owner Email" value="@Model.SchoolOwnerEmail" />
-    <input name="SchoolOwnerPhone" placeholder="School Owener Phone" value="@Model.SchoolOwnerPhone" />
-    <input name="SchoolPrincipleFirstName" placeholder="School Principle FirstName" value="@Model.SchoolPrincipleFirstName" />
-    <input name="SchoolPrincipleMiddelName" placeholder="School Principle MiddelName" value="@Model.SchoolPrincipleMiddelName" />
-    <input name="SchoolPrincipleLastName" placeholder="School Principle LastName" value="@Model.SchoolPrincipleLastName" />
-    <input name="SchoolPrincipleEmail" placeholder="School Principle Email" value="@Model.SchoolPrincipleEmail"/>
-    <input name="SchoolPrinciplePhone" placeholder="School Principle Phone" value="@Model.SchoolPrinciplePhone" />
-    <input name="SchoolCoordinatorFirstName" placeholder="School Coordinator FirstName" value="@Model.SchoolCoordinatorFirstName" />
-    <input name="SchoolCoordinatorMiddelName" placeholder="School Coordinator MiddelName" value="@Model.SchoolCoordinatorMiddelName" />
-    <input name="SchoolCoordinatorLastName" placeholder="School Coordinator LastName" value="@Model.SchoolCoordinatorLastName" />
-    <input name="SchoolCoordinatorEmail" placeholder="School Coordinator Email" value="@Model.SchoolCoordinatorEmail" />
-    <input name="SchoolCoordinatorPhone" placeholder="School Coordinator Phone" value="@Model.SchoolCoordinatorPhone" />
-    <input name="SchoolLogo1Path" placeholder="School Logo1" value="@Model.SchoolLogo1Path" />
-    <input name="SchoolLogo2Path" placeholder="School Logo2" value="@Model.SchoolLogo2Path" />
-    <input name="DashboardPicPath" placeholder="Dashboard Pictuer" value="@Model.DashboardPicPath" />
-    <input name="SchoolEmail" placeholder="School Email" value="@Model.SchoolEmail" />
-    <input name="SchoolWebsite" placeholder="School Website" value="@Model.SchoolWebsite" />
-    <input name="SchoolTrustName" placeholder="School TrustName" value="@Model.SchoolTrustName" />
-    <input name="SchoolPAN" placeholder="School PAN" value="@Model.SchoolPAN" />
-    <input name="SchoolGSTNo" placeholder="School GSTNo" value="@Model.SchoolGSTNo" />
-    @*@{
+<form id="formPost">
+    <input type="hidden" id="SchoolId" value="@Model.SchoolId" />
+    <input id="SchoolName" placeholder="School Name" value="@Model.SchoolName" />
+    <input id="SchoolAddress" placeholder="School Address" value="@Model.SchoolAddress" />
+    <input id="SchoolCity" placeholder="School City" value="@Model.SchoolCity" />
+    <input id="SchoolPinCode" placeholder="School Pin Code" value="@Model.SchoolPinCode" />
+    <input id="SchoolState" placeholder="School State" value="@Model.SchoolState" />
+    <input id="SchoolPhone" placeholder="SchoolPhone" value="@Model.SchoolPhone" />
+    <input id="EstablishmentDate" placeholder="Establishment Date" value="@Model.EstablishmentDate" />
+    <input id="AcademicYear" placeholder="Academy Year" value="@Model.AcademicYear" />
+
+    <input id="SchoolCode" placeholder="School Code " value="@Model.SchoolCode" />
+    <input id="AcademicStartDate" placeholder="Academic Start Date" value="@Model.AcademicStartDate" />
+    <input id="AcademicEndDate" placeholder="Academic End Date" value="@Model.AcademicEndDate" />
+    <input id="GeoLocation" placeholder="Geo Location" value="@Model.GeoLocation" />
+    <input id="SchoolOwnerFirstName" placeholder="School Owner FirstName" value="@Model.SchoolOwnerFirstName" />
+    <input id="SchoolOwnerMiddelName" placeholder="School Owner MiddelName" value="@Model.SchoolOwnerMiddelName" />
+    <input id="SchoolOwnerLastName" placeholder="School Owner LastName" value="@Model.SchoolOwnerFirstName" />
+    <input id="SchoolOwnerEmail" placeholder="School Owner Email" value="@Model.SchoolOwnerEmail" />
+    <input id="SchoolOwnerPhone" placeholder="School Owener Phone" value="@Model.SchoolOwnerPhone" />
+    <input id="SchoolPrincipleFirstName" placeholder="School Principle FirstName" value="@Model.SchoolPrincipleFirstName" />
+    <input id="SchoolPrincipleMiddelName" placeholder="School Principle MiddelName" value="@Model.SchoolPrincipleMiddelName" />
+    <input id="SchoolPrincipleLastName" placeholder="School Principle LastName" value="@Model.SchoolPrincipleLastName" />
+    <input id="SchoolPrincipleEmail" placeholder="School Principle Email" value="@Model.SchoolPrincipleEmail" />
+    <input id="SchoolPrinciplePhone" placeholder="School Principle Phone" value="@Model.SchoolPrinciplePhone" />
+    <input id="SchoolCoordinatorFirstName" placeholder="School Coordinator FirstName" value="@Model.SchoolCoordinatorFirstName" />
+    <input id="SchoolCoordinatorMiddelName" placeholder="School Coordinator MiddelName" value="@Model.SchoolCoordinatorMiddelName" />
+    <input id="SchoolCoordinatorLastName" placeholder="School Coordinator LastName" value="@Model.SchoolCoordinatorLastName" />
+    <input id="SchoolCoordinatorEmail" placeholder="School Coordinator Email" value="@Model.SchoolCoordinatorEmail" />
+    <input id="SchoolCoordinatorPhone" placeholder="School Coordinator Phone" value="@Model.SchoolCoordinatorPhone" />
+
+    <input type="file" class="custom-file-input" id="SchoolLogo1PathFile" name="SchoolLogo1PathFile">
+    <input type="hidden" id="SchoolLogo1Path" name="SchoolLogo1Path" value="@Model.SchoolLogo1Path">
+    <input type="file" class="custom-file-input" id="SchoolLogo2PathFile" name="SchoolLogo2PathFile">
+    <input type="hidden" id="SchoolLogo2Path" name="SchoolLogo2Path" value="@Model.SchoolLogo2Path">
+    <input type="file" class="custom-file-input" id="DashboardPicPathFile" name="DashboardPicPathFile">
+    <input type="hidden" id="DashboardPicPath" name="DashboardPicPath" value="@Model.DashboardPicPath">
+
+    <input id="SchoolEmail" placeholder="School Email" value="@Model.SchoolEmail" />
+    <input id="SchoolWebsite" placeholder="School Website" value="@Model.SchoolWebsite" />
+    <input id="SchoolTrustName" placeholder="School TrustName" value="@Model.SchoolTrustName" />
+    <input id="SchoolPAN" placeholder="School PAN" value="@Model.SchoolPAN" />
+    <input id="SchoolGSTNo" placeholder="School GSTNo" value="@Model.SchoolGSTNo" />
+    @{
         var cnt = ViewBag.Data;
         int i = 1;
         foreach (var item in cnt)
         {
-            <div class="row">
-                <ejs-combobox id="Class_@i" name="Class_@i" dataSource="@ViewBag.Data" placeholder="Select Class">
-                    <e-combobox-fields text="ClassName" value="ClassId"></e-combobox-fields>
-                </ejs-combobox>
-                <input id="TotalDivisions_@i" placeholder="Total Division (e.g. 5)" />
-                <input id="ClassBookPrice_@i" placeholder="Class Book Price" />
-
-            </div>
+                <div class="row">
+                    <select id="ClassId_@i">
+                        <option>Select Class</option>
+                        @{
+                        string classSelected = string.Empty;
+                        }
+                        @foreach (var dt in ViewBag.Data)
+                    {
+                            <option value="@dt.classId" @classSelected>@dt.className</option>
+                    }
+                    </select>
+                    <input type="Text" id="TotalDivisions_@i" placeholder="Total Division (e.g. 5)" />
+                    <input type="Text" id="ClassBookPrice_@i" placeholder="Class Book Price" />
+                </div>
             i++;
         }
-
-    }*@
-    <input type="submit" title="Submit" />
+    }
+    <button id="btnSave">Save</button>
 </form>
 
+@section scripts{
+   $(function () {
+    <script type="text/javascript">
+        $("#btnSave").click(function (e) {
+            debugger;
+            imgPath = '';
+            //var img1=uploadSchoolLogo1File();
+            //var img2=uploadSchoolLogo2File();
+            //var img3=uploadDashboardPicPath();
 
-<input type="hidden" name="examid" id="examid" />
-<script type="text/javascript">
-    function countrychange() {
-        // disable the state DropDownList
-        var countryObj = document.getElementById('Exam').ej2_instances[0];
-        //alert(countryObj.value);
-          $('#examid').val(countryObj.value);
-        //alert($('#examid').val());
-        var state = document.getElementById('examtopiccount').ej2_instances[0];
-
-        state.enabled = true;
-        //frame the query based on selected value in country DropDownList.
-        var tempQuery = new ej.data.Query().where('ExamId', 'equal', countryObj.value);
-        // set the framed query based on selected value in country DropDownList.
-
-        state.query = tempQuery;
-
-        // set null value to state DropDownList text property
-        state.text = null;
-        state.value = null;
-        //  bind the property changes to state DropDownList
-        state.dataBind();
-      // alert(state.getItems().length);
-        var len = state.getItems().length;
-         ej.base.enableRipple(true);
-         var result = state.dataSource;
-        document.getElementById('input-container').replaceChildren();
-        for (i = 0; i < result.length; i++) {
-           if(countryObj.value==result[i].ExamId) {
-            //alert(result[i].ExamId);
-
-            var element = document.createElement('input');
-
-            element.setAttribute("id", result[i].ExamTopicName + result[i].ExamTopicId);
-            element.setAttribute("name", result[i].ExamTopicName + result[i].ExamTopicId);
-            document.getElementById('input-container').appendChild(element);
-            new ej.inputs.Input.createInput({
-                element: element,
-
-                properties: {
-                    placeholder: result[i].ExamTopicName
-
+            if (!document.getElementById("formPost").checkValidity()) {
+                e.preventDefault();
+            } else {
+                var _schoolModel = {
+                    SchoolId: $("#SchoolId").val(),
+                    SchoolName: $("#SchoolName").val(),
+                    SchoolAddress: $("#SchoolAddress").val(),
+                    SchoolCity: $("#SchoolCity").val(),
+                    SchoolPinCode: $("#SchoolPinCode").val(),
+                    SchoolState: $("#SchoolState").val(),
+                    SchoolPhone: $("#SchoolPhone").val(),
+                    SchoolCode: $("#SchoolCode").val(),
+                    AcademicYear:$("#AcademicYear").val(),
+                    AcademicStartDate: $("#AcademicStartDate").val(),
+                    AcademicEndDate: $("#AcademicEndDate").val(),
+                    SchoolOwnerFirstName: $("#SchoolOwnerFirstName").val(),
+                    SchoolOwnerMiddelName: $("#SchoolOwnerMiddelName").val(),
+                    SchoolOwnerLastName: $("#SchoolOwnerLastName").val(),
+                    SchoolOwnerEmail: $("#SchoolOwnerEmail").val(),
+                    SchoolOwnerPhone: $("#SchoolOwnerPhone").val(),
+                    SchoolPrincipleFirstName: $("#SchoolPrincipleFirstName").val(),
+                    SchoolPrincipleMiddleName: $("#SchoolPrincipleMiddleName").val(),
+                    SchoolPrincipleLastName: $("#SchoolPrincipleLastName").val(),
+                    SchoolPrincipleEmail: $("#SchoolPrincipleEmail").val(),
+                    SchoolPrinciplePhone: $("#SchoolPrinciplePhone").val(),
+                    SchoolCoordinatorFirstName: $("#SchoolCoordinatorFirstName").val(),
+                    SchoolCoordinatorMiddleName: $("#SchoolCoordinatorMiddleName").val(),
+                    SchoolCoordinatorLastName: $("#SchoolCoordinatorLastName").val(),
+                    SchoolCoordinatorEmail: $("#SchoolCoordinatorEmail").val(),
+                    SchoolCoordinatorPhone: $("#SchoolCoordinatorPhone").val(),
+                    SchoolEmail: $("#SchoolEmail").val(),
+                    SchoolWebsite: $("#SchoolWebsite").val(),
+                    SchoolTrustName: $("#SchoolTrustName").val(),
+                    SchoolPAN: $("#SchoolPAN").val(),
+                    SchoolGSTNo: $("#SchoolGSTNo").val(),
+                    //SchoolLogo1Path=img1,
+                    //SchoolLogo2Path=img2,
+                    //DashboardPicPath=img3,
+                    //addedBy: @Context.Session.GetInt32("#UserId"),
+                    ClassDivision: [],
+                    BookPrice: []
                 }
-            });
+                var inputs = document.getElementsByTagName('select');
+                var totalDiv = "";
+                var bookPrice = "";
+                for (index = 1; index < inputs.length; ++index) {
+                    selectClass = $("#ClassId_" + index + "").val();
+                    totalDiv = $("#TotalDivisions_" + index + "").val();
+                    bookPrice = $("#ClassBookPrice_" + index + "").val();
+                    _schoolModel.ClassDivision.push({ key: parseInt(selectClass), value: parseInt(totalDiv) });
+                    _schoolModel.BookPrice.push({ key: parseInt(selectClass), value: bookPrice });
+                }
+
+                console.log(_schoolModel);
+                $.ajax({
+                    type: "POST",
+                    url: "/School/SaveSchool",
+                    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    data: _schoolModel,
+                    //dataType: "json",
+                    success: function (data, statusText, xhr) {
+                        //console.log(xhr.status);
+                        console.log(data);
+                        if (xhr.status === 200) {
+                            sweetAlert({
+                                html: true,
+                                title: "School",
+                                text: "Successfully created!",
+                                type: "success"
+                            });}
+                        //} else if (data.status === "duplicate") {
+                        //    sweetAlert("Validation Alert!", data.responseMsg, "warning");
+                        //} else if (data.status === "error") {
+                        //    sweetAlert("Validation Alert!", data.responseMsg, "warning");
+                        //} else {
+                        //    sweetAlert("Validation Alert!", "Something unexpected!", "warning");
+                        //}
+                    }
+                    //error: function (data) {
+                    //    if (data.status == 401) {
+                    //        window.location.replace('/Message/TokenExpire');
+                    //    } else if (data.status == 403) {
+                    //        window.location.replace('/Message/Unauthorize');
+                    //    } else if (data.status == 400) {
+                    //        sweetAlert("Validation Alert!", "Please check input data!", "warning");
+                    //    }
+                    //}
+                });
+            }
+        });
+
+        // File Upload
+        function uploadSchoolLogo1File() {
+            var totalFiles = document.getElementById('SchoolLogo1Path').files.length;
+            if (totalFiles > 0) {
+                var formData = new FormData();
+                var files = document.getElementById('SchoolLogo1Path').files;
+                formData.append("file", files[0]);
+                uploadFile(formData);
+            }
         }
+        function uploadSchoolLogo2File() {
+            var totalFiles = document.getElementById('SchoolLogo2Path').files.length;
+            if (totalFiles > 0) {
+                var formData = new FormData();
+                var files = document.getElementById('SchoolLogo2Path').files;
+                formData.append("file", files[0]);
+                uploadFile(formData);
+            }
         }
-    }
-</script>
+        function uploadDashboardPicPath() {
+            var totalFiles = document.getElementById('DashboardPicPath').files.length;
+            if (totalFiles > 0) {
+                var formData = new FormData();
+                var files = document.getElementById('DashboardPicPath').files;
+                formData.append("file", files[0]);
+                uploadFile(formData);
+            }
+        }
+        function uploadFile(formData) {
+            $.ajax(
+                {
+                    url: "/Upload/ImgUpload",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    async: false,
+                    type: "POST",
+                    success: function (data) {
+                        imgPath = data;
+                        // $('#profilePic').attr('src', imgPath);
+                        // resetInputFile('#userModal');
+                    },
+                    error: function (data) {
+                        window.location.replace('/Message/SessionExpire');
+                    }
+                }
+            );
+        }
+
+    </script>
+    });
+
+                            }

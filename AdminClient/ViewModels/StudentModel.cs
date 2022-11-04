@@ -38,7 +38,6 @@ namespace AdminClient.ViewModels
         public string? SchoolName { get; set; }
         public int? ClassId { get; set; }
         public string? ClassName { get; set; }
-
         public bool? FirstTimeLogin { get; set; }
         public bool IsPasswordChange { get; set; }
     }

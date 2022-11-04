@@ -14,6 +14,8 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using NLog;
 using AdminClient.ViewModels;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace AdminClient.Controllers
 {
@@ -117,14 +119,27 @@ namespace AdminClient.Controllers
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     returnString = await response.Content.ReadAsStringAsync();
-                    var menuList = JsonConvert.DeserializeObject(returnString);
-                    JObject json = JObject.Parse(returnString.ToString().Replace("&#xD;&#xA;", Environment.NewLine));
+                    var json = AllChildren(JObject.Parse(returnString.ToString().Replace("&#xD;&#xA;", Environment.NewLine)))
+                                            .First(c => c.Type == JTokenType.Array && c.Path.Contains("data"))
+                                            .Children<JObject>();
                     ViewBag.Data = json;
-                    //_logger.LogError("History not generated!Check please.");
                 }
 
             }
             return View(schoolModel);
+        }
+
+        // recursively yield all children of json
+        private static IEnumerable<JToken> AllChildren(JToken json)
+        {
+            foreach (var c in json.Children())
+            {
+                yield return c;
+                foreach (var cc in AllChildren(c))
+                {
+                    yield return cc;
+                }
+            }
         }
 
         [HttpPost]
@@ -149,7 +164,7 @@ namespace AdminClient.Controllers
                 }
 
             }
-            return View("/Views/School/Create.cshtml", new SchoolModel());
+            return Json("/Views/School/Create.cshtml", new SchoolModel());
         }
     }
 }

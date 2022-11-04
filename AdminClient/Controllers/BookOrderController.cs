@@ -79,7 +79,6 @@ namespace AdminClient.Controllers
                     HttpContext.Session.SetInt32("BookClassCount", menuList.Count);
                     ViewBag.Data = json;
                 }
-
             }
 
             return View();
@@ -125,10 +124,6 @@ namespace AdminClient.Controllers
                     }
                 }
             }
-
-               
-            
-
             return RedirectToAction("Index");
         }
     }

@@ -1,4 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Http
+@using Microsoft.Extensions.Configuration;
+@inject IConfiguration Configuration;
+@{
+    string apiUrl = Configuration.GetValue<string>("WebAPIBaseUrl");
+}
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -42,7 +48,15 @@
                             <div class="col-md-4">
                                 <h4 class="text-light text-uppercase mb-0" id="navbar-header-name"></h4>
                             </div>
-                            <div class="col-md-5"></div>
+                            <div class="col-md-5">
+                                <select id="SchoolId">
+                                </select>
+                                <select id="AcademyYearId">
+                                    <option>2019-20</option>
+                                    <option>2020-21</option>
+                                    <option>2021-22</option>
+                                </select>
+                            </div>
                             <div class="col-md-3">
                                 <ul class="navbar-nav">
                                     <li class="nav-item ml-md-auto"><a href="#" class="nav-link" onclick="toggleFullScreen()"><i class="fas fa-expand text-muted fa-lg"></i></a></li>
@@ -124,5 +138,68 @@
     <script src="~/js/Chart.min.js"></script>
     <script src="~/js/site.js"></script>
     @RenderSection("scripts", false);
+    <script>
+        $(function () {
+            if ('@Context.Session.GetString("RoleName")' == 'Admin') {
+                loadGetSchools();
+            }
+        });
+
+        function loadGetSchools() {
+            $.ajax({
+                type: "GET",
+                url: "@apiUrl/api/Schools/GetSchools",
+                contentType: "application/json; charset=utf-8",
+                headers: {
+                    "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                },
+                dataType: "json",
+                success: function (data) {
+                    if (data) {
+                        data.forEach(school => {
+                            $('#schoolId').append('<option value="'+ school.schoolId+'">' + school.schoolName + '</option>');
+                        });
+                    } else {
+                        sweetAlert("Validation Alert!", "Something unexpected!", "warning");
+                    }
+                },
+                error: function (data) {
+                    if (data.status == 401) {
+                        window.location.replace('/Message/TokenExpire');
+                    } else if (data.status == 403) {
+                        window.location.replace('/Message/Unauthorize');
+                    }
+                }
+            });
+        }
+
+        function loadGetSchools() {
+            $.ajax({
+                type: "GET",
+                url: "@apiUrl/api/AcademyYears/GetAcademyYears",
+                contentType: "application/json; charset=utf-8",
+                headers: {
+                    "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                },
+                dataType: "json",
+                success: function (data) {
+                    if (data) {
+                        data.forEach(acYear => {
+                            $('#AcademyYearId').append('<option value="' + acYear.academyYearId + '">' + acYear.academyYearName + '</option>');
+                        });
+                    } else {
+                        sweetAlert("Validation Alert!", "Something unexpected!", "warning");
+                    }
+                },
+                error: function (data) {
+                    if (data.status == 401) {
+                        window.location.replace('/Message/TokenExpire');
+                    } else if (data.status == 403) {
+                        window.location.replace('/Message/Unauthorize');
+                    }
+                }
+            });
+        }
+    </script>
 </body>
 </html>
