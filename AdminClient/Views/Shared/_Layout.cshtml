@@ -49,13 +49,16 @@
                                 <h4 class="text-light text-uppercase mb-0" id="navbar-header-name"></h4>
                             </div>
                             <div class="col-md-5">
-                                <select id="SchoolId">
-                                </select>
-                                <select id="AcademyYearId">
-                                    <option>2019-20</option>
-                                    <option>2020-21</option>
-                                    <option>2021-22</option>
-                                </select>
+                                <div class="row">
+                                    <div class="col-8">
+                                        <select id="SchoolId">
+                                        </select>
+                                    </div>
+                                    <div class="col-4">
+                                        <select id="AcademyYearId">
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-3">
                                 <ul class="navbar-nav">
@@ -142,6 +145,7 @@
         $(function () {
             if ('@Context.Session.GetString("RoleName")' == 'Admin') {
                 loadGetSchools();
+                loadGetAcademyYear();
             }
         });
 
@@ -155,10 +159,17 @@
                 },
                 dataType: "json",
                 success: function (data) {
+                    debugger;
                     if (data) {
-                        data.forEach(school => {
-                            $('#schoolId').append('<option value="'+ school.schoolId+'">' + school.schoolName + '</option>');
-                        });
+                        //data.forEach(el =>{  console.log(el);});
+                        //data.forEach(school => {
+                        //    $('#schoolId').append('<option value="'+ school.schoolId+'">' + school.schoolName + '</option>');
+                        //});
+
+                        for (let i = 0; i < data.data.length; i++) {
+                            $('#SchoolId').append('<option value="' + data.data[i].schoolId + '">' + data.data[i].schoolName + '</option>');
+                        }
+
                     } else {
                         sweetAlert("Validation Alert!", "Something unexpected!", "warning");
                     }
@@ -173,7 +184,7 @@
             });
         }
 
-        function loadGetSchools() {
+        function loadGetAcademyYear() {
             $.ajax({
                 type: "GET",
                 url: "@apiUrl/api/AcademyYears/GetAcademyYears",
@@ -183,10 +194,16 @@
                 },
                 dataType: "json",
                 success: function (data) {
+                    debugger;
                     if (data) {
-                        data.forEach(acYear => {
-                            $('#AcademyYearId').append('<option value="' + acYear.academyYearId + '">' + acYear.academyYearName + '</option>');
-                        });
+                        //data.forEach(el => { console.log(el); });
+                        //data.forEach(acYear => {
+                        //    $('#AcademyYearId').append('<option value="' + acYear.academyYearId + '">' + acYear.academyYearName + '</option>');
+                        //});
+                        for (let i = 0; i < data.data.length; i++) {
+                            debugger;
+                            $('#AcademyYearId').append('<option value="' + data.data[i].academyYearId + '">' + data.data[i].academyYearName + '</option>');
+                        }
                     } else {
                         sweetAlert("Validation Alert!", "Something unexpected!", "warning");
                     }
