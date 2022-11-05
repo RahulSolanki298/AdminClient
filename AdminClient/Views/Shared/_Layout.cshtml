@@ -49,16 +49,7 @@
                                 <h4 class="text-light text-uppercase mb-0" id="navbar-header-name"></h4>
                             </div>
                             <div class="col-md-5">
-                                <div class="row">
-                                    <div class="col-8">
-                                        <select id="SchoolId">
-                                        </select>
-                                    </div>
-                                    <div class="col-4">
-                                        <select id="AcademyYearId">
-                                        </select>
-                                    </div>
-                                </div>
+                                
                             </div>
                             <div class="col-md-3">
                                 <ul class="navbar-nav">
@@ -141,82 +132,5 @@
     <script src="~/js/Chart.min.js"></script>
     <script src="~/js/site.js"></script>
     @RenderSection("scripts", false);
-    <script>
-        $(function () {
-            if ('@Context.Session.GetString("RoleName")' == 'Admin') {
-                loadGetSchools();
-                loadGetAcademyYear();
-            }
-        });
-
-        function loadGetSchools() {
-            $.ajax({
-                type: "GET",
-                url: "@apiUrl/api/Schools/GetSchools",
-                contentType: "application/json; charset=utf-8",
-                headers: {
-                    "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
-                },
-                dataType: "json",
-                success: function (data) {
-                    debugger;
-                    if (data) {
-                        //data.forEach(el =>{  console.log(el);});
-                        //data.forEach(school => {
-                        //    $('#schoolId').append('<option value="'+ school.schoolId+'">' + school.schoolName + '</option>');
-                        //});
-
-                        for (let i = 0; i < data.data.length; i++) {
-                            $('#SchoolId').append('<option value="' + data.data[i].schoolId + '">' + data.data[i].schoolName + '</option>');
-                        }
-
-                    } else {
-                        sweetAlert("Validation Alert!", "Something unexpected!", "warning");
-                    }
-                },
-                error: function (data) {
-                    if (data.status == 401) {
-                        window.location.replace('/Message/TokenExpire');
-                    } else if (data.status == 403) {
-                        window.location.replace('/Message/Unauthorize');
-                    }
-                }
-            });
-        }
-
-        function loadGetAcademyYear() {
-            $.ajax({
-                type: "GET",
-                url: "@apiUrl/api/AcademyYears/GetAcademyYears",
-                contentType: "application/json; charset=utf-8",
-                headers: {
-                    "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
-                },
-                dataType: "json",
-                success: function (data) {
-                    debugger;
-                    if (data) {
-                        //data.forEach(el => { console.log(el); });
-                        //data.forEach(acYear => {
-                        //    $('#AcademyYearId').append('<option value="' + acYear.academyYearId + '">' + acYear.academyYearName + '</option>');
-                        //});
-                        for (let i = 0; i < data.data.length; i++) {
-                            debugger;
-                            $('#AcademyYearId').append('<option value="' + data.data[i].academyYearId + '">' + data.data[i].academyYearName + '</option>');
-                        }
-                    } else {
-                        sweetAlert("Validation Alert!", "Something unexpected!", "warning");
-                    }
-                },
-                error: function (data) {
-                    if (data.status == 401) {
-                        window.location.replace('/Message/TokenExpire');
-                    } else if (data.status == 403) {
-                        window.location.replace('/Message/Unauthorize');
-                    }
-                }
-            });
-        }
-    </script>
 </body>
 </html>

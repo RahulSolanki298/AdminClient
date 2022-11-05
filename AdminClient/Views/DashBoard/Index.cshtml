@@ -7,6 +7,20 @@
     string apiUrl = Configuration.GetValue<string>("WebAPIBaseUrl");
 }
 
+<section id="SchoolManager">
+    <div class="row">
+        <div class="col-8">
+            <select id="SchoolId">
+                <option value="0">Select School</option>
+            </select>
+        </div>
+        <div class="col-4">
+            <select id="AcademyYearId">
+                <option value="0">Select Academy Year</option>
+            </select>
+        </div>
+    </div>
+</section>
 <section id="userStatus" style="display:none">
     <div class="row">
         <div class="col-xl-3 col-sm-6 p-2">
@@ -73,7 +87,7 @@
             <canvas id="pieChart" width="400" height="400"></canvas>
         </div>
     </div>
-    <div class="row">     
+    <div class="row">
         <div class="col-sm-6">
             <canvas id="monthChart" width="400" height="400"></canvas>
         </div>
@@ -85,16 +99,18 @@
 
 @section scripts{
     <script>
-        var dateChartData = null, pieChartData = null, monthChartData = null, yearChartData=null;
+        var dateChartData = null, pieChartData = null, monthChartData = null, yearChartData = null;
         $(function () {
-            if ('@Context.Session.GetString("RoleName")'== 'Admin') {
+            if ('@Context.Session.GetString("RoleName")' == 'Admin') {
                 $('#userStatus').show();
                 loadUserStatus();
+                loadGetSchools();
             }
             loadDateChart();
             loadPieChart();
             loadMonthChart();
             loadYearChart();
+            loadGetAcademyYear();
 
             new Chart($('#dateChart'), {
                 type: 'line',
@@ -119,7 +135,7 @@
                 data: {
                     labels: pieChartData.map(x => x.roleName),
                     datasets: [
-                        {                          
+                        {
                             backgroundColor: '#343a40',
                             data: pieChartData.map(x => x.count)
                         }
@@ -176,6 +192,17 @@
                     }
                 }
             });
+
+            $("#SchoolId").change(function () {
+                debugger;
+                var key = "httpSchool";
+                changeDropdown(key, this.value);
+            });
+
+            $("#AcademyYearId").change(function () {
+                var key = "httpAcYear";
+                changeDropdown(key, this.value);
+            });
         });
 
         function loadDateChart() {
@@ -184,10 +211,10 @@
                 url: "@apiUrl/api/Users/GetLogInSummaryByDate/@Context.Session.GetInt32("UserId")",
                 contentType: "application/json; charset=utf-8",
                 headers: {
-                       "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                    "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
                 },
                 dataType: "json",
-                async:false,
+                async: false,
                 success: function (data) {
                     //console.log(data)
                     dateChartData = data;
@@ -207,10 +234,10 @@
                 url: "@apiUrl/api/Users/GetRoleWiseUser",
                 contentType: "application/json; charset=utf-8",
                 headers: {
-                       "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                    "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
                 },
                 dataType: "json",
-                async:false,
+                async: false,
                 success: function (data) {
                     //console.log(data)
                     pieChartData = data;
@@ -230,10 +257,10 @@
                 url: "@apiUrl/api/Users/GetLogInSummaryByMonth/@Context.Session.GetInt32("UserId")",
                 contentType: "application/json; charset=utf-8",
                 headers: {
-                       "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                    "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
                 },
                 dataType: "json",
-                async:false,
+                async: false,
                 success: function (data) {
                     //console.log(data)
                     monthChartData = data;
@@ -253,10 +280,10 @@
                 url: "@apiUrl/api/Users/GetLogInSummaryByYear/@Context.Session.GetInt32("UserId")",
                 contentType: "application/json; charset=utf-8",
                 headers: {
-                       "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                    "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
                 },
                 dataType: "json",
-                async:false,
+                async: false,
                 success: function (data) {
                     //console.log(data)
                     yearChartData = data;
@@ -277,7 +304,7 @@
                 url: "@apiUrl/api/Users/UserStatus",
                 contentType: "application/json; charset=utf-8",
                 headers: {
-                       "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                    "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
                 },
                 dataType: "json",
                 success: function (data) {
@@ -298,6 +325,75 @@
                     }
                 }
             });
+        }
+
+        function loadGetSchools() {
+            $.ajax({
+                type: "GET",
+                url: "@apiUrl/api/Schools/GetSchools",
+                contentType: "application/json; charset=utf-8",
+                headers: {
+                    "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                },
+                dataType: "json",
+                success: function (data) {
+                    if (data) {
+                        debugger;
+                        var selecteValue='';
+                        var defaultSchoolId = '@Context.Session.GetString("httpSchool")';
+                        for (let i = 0; i < data.data.length; i++) {
+                            if (data.data[i].schoolId === parseInt(defaultSchoolId)) { selecteValue = "selected"; }
+                            $('#SchoolId').append('<option value="' + data.data[i].schoolId + '"' + selecteValue + '>' + data.data[i].schoolName + '</option>');
+                        }
+
+                    } else {
+                        sweetAlert("Validation Alert!", "Something unexpected!", "warning");
+                    }
+                },
+                error: function (data) {
+                    if (data.status == 401) {
+                        window.location.replace('/Message/TokenExpire');
+                    } else if (data.status == 403) {
+                        window.location.replace('/Message/Unauthorize');
+                    }
+                }
+            });
+        }
+
+        function loadGetAcademyYear() {
+            $.ajax({
+                type: "GET",
+                url: "@apiUrl/api/AcademyYears/GetAcademyYears",
+                contentType: "application/json; charset=utf-8",
+                headers: {
+                    "authorization": "Bearer @Context.Session.GetString("TokenTxt")"
+                },
+                dataType: "json",
+                success: function (data) {
+                    if (data) {
+                        var defaultAcademyId = '@Context.Session.GetString("httpAcYear")';
+                        for (let i = 0; i < data.data.length; i++) {
+                            if (data.data[i].academyYearId === parseInt(defaultAcademyId)) { selecteValue = "selected"; }
+                            $('#AcademyYearId').append('<option value="' + data.data[i].academyYearId + '">' + data.data[i].academyYearName + '</option>');
+                        }
+                    } else {
+                        sweetAlert("Validation Alert!", "Something unexpected!", "warning");
+                    }
+                },
+                error: function (data) {
+                    if (data.status == 401) {
+                        window.location.replace('/Message/TokenExpire');
+                    } else if (data.status == 403) {
+                        window.location.replace('/Message/Unauthorize');
+                    }
+                }
+            });
+        }
+
+        function changeDropdown(key, value) {
+            var SessionManager = { key: key, value: value };
+            var url = "/DashBoard/SetChangeSchoolSession";
+            $.post(url, SessionManager).done(function (response) { });
         }
     </script>
 
