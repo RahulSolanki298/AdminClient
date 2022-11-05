@@ -44,7 +44,7 @@ namespace AdminClient.Controllers
                     returnString = await response.Content.ReadAsStringAsync();
                     JObject json = JObject.Parse(returnString.ToString().Replace("&#xD;&#xA;", Environment.NewLine));
                     ViewBag.Data = json;
-                    }
+                }
             }
             return View();
         }
@@ -54,6 +54,7 @@ namespace AdminClient.Controllers
         {
             TeachingPlanData teachingModel = new TeachingPlanData();
             string token = HttpContext.Session.GetString(tokenTxt);
+            ViewBag.AcadamyId = HttpContext.Session.GetString(SessionKeys.httpAcYearId);        
             int teachingPlanId = Convert.ToInt32(id);
             if (teachingPlanId > 0)
             {

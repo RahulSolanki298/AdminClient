@@ -126,6 +126,9 @@ namespace AdminClient.Controllers
                 }
 
             }
+            ViewBag.AcademyYearId = HttpContext.Session.GetString(SessionKeys.httpAcYearId);
+            ViewBag.AcademyYear = HttpContext.Session.GetString(SessionKeys.httpAcYear);
+
             return View(schoolModel);
         }
 

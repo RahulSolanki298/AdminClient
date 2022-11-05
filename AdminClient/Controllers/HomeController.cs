@@ -82,6 +82,7 @@ namespace AdminClient.Controllers
                                         HttpContext.Session.SetString(fullName, objUser.obj.FirstName);
                                         HttpContext.Session.SetString(roleName, objUser.obj.RoleName);
                                         HttpContext.Session.SetInt32(schoolId, Convert.ToInt32(objUser.obj.SchoolId));
+                                        HttpContext.Session.SetString(SessionKeys.httpSchoolId,Convert.ToString(objUser.obj.SchoolId));
 
                                         CreateLoginHistory(objUser.obj.UserId, logCode, objUser.token);
                                         return RedirectToAction("Index","DashBoard");

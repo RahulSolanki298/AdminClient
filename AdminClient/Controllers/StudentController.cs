@@ -71,7 +71,9 @@ namespace AdminClient.Controllers
                     }
                 }
             }
-            
+            ViewBag.schoolId = HttpContext.Session.GetString(SessionKeys.httpSchoolId);
+            ViewBag.schoolName = HttpContext.Session.GetString(SessionKeys.httpSchool);
+
             return View(studentModel);
         }
 

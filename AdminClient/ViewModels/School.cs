@@ -21,7 +21,7 @@ namespace AdminClient.ViewModels
         public string SchoolPhone { get; set; }
         [Required]
         public string  AcademicYear { get; set; }
-
+        public string AcademyYearId { get; set; }
         public string? SchoolCode { get; set; }
         public DateTime? EstablishmentDate { get; set; }
 

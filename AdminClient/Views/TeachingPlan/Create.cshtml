@@ -2,7 +2,7 @@
 
 <form action="/TeachingPlan/SaveTeachingPlan" method="post">
     <input type="hidden" name="TeachingPlanId" value="@Model.TeachingPlanId" />
-    <input name="TeachingPlanName" placeholder="School Name" value="@Model.TeachingPlanName" />
+    <input name="TeachingPlanName" placeholder="Teaching Plan Name" value="@Model.TeachingPlanName" />
     <select name="eBookChapterId">
         <option>Select eBookChapter</option>
         @{
@@ -29,7 +29,7 @@
         }
         @foreach (var item in ViewBag.AcademyYearData.data)
         {
-            if (Model.AcademyYearId == Convert.ToInt32(item.academyYearId))
+            if (Model.AcademyYearId == Convert.ToInt32(item.academyYearId) || item.academyYearId == ViewBag.AcadamyId)
             {
                 selected = "selected";
             }
