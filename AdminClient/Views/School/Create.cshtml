@@ -7,79 +7,260 @@
     ViewBag.Title = "School";
     string apiUrl = Configuration.GetValue<string>("WebAPIBaseUrl");
 }
+@section styles{
+    <style>
 
-<form id="formPost">
-    <input type="hidden" id="SchoolId" value="@Model.SchoolId" />
-    <input id="SchoolName" placeholder="School Name" value="@Model.SchoolName" />
-    <input id="SchoolAddress" placeholder="School Address" value="@Model.SchoolAddress" />
-    <input id="SchoolCity" placeholder="School City" value="@Model.SchoolCity" />
-    <input id="SchoolPinCode" placeholder="School Pin Code" value="@Model.SchoolPinCode" />
-    <input id="SchoolState" placeholder="School State" value="@Model.SchoolState" />
-    <input id="SchoolPhone" placeholder="SchoolPhone" value="@Model.SchoolPhone" />
-    <input id="EstablishmentDate" placeholder="Establishment Date" value="@Model.EstablishmentDate" />
-    <input id="AcademicYear" placeholder="Academy Year" value="@ViewBag.AcademyYear" />
-    <input type="hidden" id="AcademicYearId" placeholder="Academy Year Id" value="@ViewBag.AcademyYearId" />
+        body {
+            background-color: #f1f1f1;
+        }
 
-    <input id="SchoolCode" placeholder="School Code " value="@Model.SchoolCode" />
-    <input id="AcademicStartDate" placeholder="Academic Start Date" value="@Model.AcademicStartDate" />
-    <input id="AcademicEndDate" placeholder="Academic End Date" value="@Model.AcademicEndDate" />
-    <input id="GeoLocation" placeholder="Geo Location" value="@Model.GeoLocation" />
-    <input id="SchoolOwnerFirstName" placeholder="School Owner FirstName" value="@Model.SchoolOwnerFirstName" />
-    <input id="SchoolOwnerMiddelName" placeholder="School Owner MiddelName" value="@Model.SchoolOwnerMiddelName" />
-    <input id="SchoolOwnerLastName" placeholder="School Owner LastName" value="@Model.SchoolOwnerFirstName" />
-    <input id="SchoolOwnerEmail" placeholder="School Owner Email" value="@Model.SchoolOwnerEmail" />
-    <input id="SchoolOwnerPhone" placeholder="School Owener Phone" value="@Model.SchoolOwnerPhone" />
-    <input id="SchoolPrincipleFirstName" placeholder="School Principle FirstName" value="@Model.SchoolPrincipleFirstName" />
-    <input id="SchoolPrincipleMiddelName" placeholder="School Principle MiddelName" value="@Model.SchoolPrincipleMiddelName" />
-    <input id="SchoolPrincipleLastName" placeholder="School Principle LastName" value="@Model.SchoolPrincipleLastName" />
-    <input id="SchoolPrincipleEmail" placeholder="School Principle Email" value="@Model.SchoolPrincipleEmail" />
-    <input id="SchoolPrinciplePhone" placeholder="School Principle Phone" value="@Model.SchoolPrinciplePhone" />
-    <input id="SchoolCoordinatorFirstName" placeholder="School Coordinator FirstName" value="@Model.SchoolCoordinatorFirstName" />
-    <input id="SchoolCoordinatorMiddelName" placeholder="School Coordinator MiddelName" value="@Model.SchoolCoordinatorMiddelName" />
-    <input id="SchoolCoordinatorLastName" placeholder="School Coordinator LastName" value="@Model.SchoolCoordinatorLastName" />
-    <input id="SchoolCoordinatorEmail" placeholder="School Coordinator Email" value="@Model.SchoolCoordinatorEmail" />
-    <input id="SchoolCoordinatorPhone" placeholder="School Coordinator Phone" value="@Model.SchoolCoordinatorPhone" />
+        h1 {
+            text-align: center;
+        }
 
-    <input type="file" class="custom-file-input" id="SchoolLogo1PathFile" name="SchoolLogo1PathFile">
-    <input type="hidden" id="SchoolLogo1Path" name="SchoolLogo1Path" value="@Model.SchoolLogo1Path">
-    <input type="file" class="custom-file-input" id="SchoolLogo2PathFile" name="SchoolLogo2PathFile">
-    <input type="hidden" id="SchoolLogo2Path" name="SchoolLogo2Path" value="@Model.SchoolLogo2Path">
-    <input type="file" class="custom-file-input" id="DashboardPicPathFile" name="DashboardPicPathFile">
-    <input type="hidden" id="DashboardPicPath" name="DashboardPicPath" value="@Model.DashboardPicPath">
+        input, select {
+            padding: 10px;
+            width: 100%;
+            font-size: 17px;
+            font-family: Raleway;
+            border: 1px solid #aaaaaa;
+        }
 
-    <input id="SchoolEmail" placeholder="School Email" value="@Model.SchoolEmail" />
-    <input id="SchoolWebsite" placeholder="School Website" value="@Model.SchoolWebsite" />
-    <input id="SchoolTrustName" placeholder="School TrustName" value="@Model.SchoolTrustName" />
-    <input id="SchoolPAN" placeholder="School PAN" value="@Model.SchoolPAN" />
-    <input id="SchoolGSTNo" placeholder="School GSTNo" value="@Model.SchoolGSTNo" />
-    @{
-        var cnt = ViewBag.Data;
-        int i = 1;
-        foreach (var item in cnt)
-        {
+            /* Mark input boxes that gets an error on validation: */
+            input.invalid {
+                background-color: #ffdddd;
+            }
+
+        /* Hide all steps by default: */
+        .tab {
+            display: none;
+        }
+
+        button {
+            background-color: #04AA6D;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 17px;
+            font-family: Raleway;
+            cursor: pointer;
+        }
+
+            button:hover {
+                opacity: 0.8;
+            }
+
+        #prevBtn {
+            background-color: #bbbbbb;
+        }
+
+        /* Make circles that indicate the steps of the form: */
+        .step {
+            height: 15px;
+            width: 15px;
+            margin: 0 2px;
+            background-color: #bbbbbb;
+            border: none;
+            border-radius: 50%;
+            display: inline-block;
+            opacity: 0.5;
+        }
+
+            .step.active {
+                opacity: 1;
+            }
+
+            /* Mark the steps that are finished and valid: */
+            .step.finish {
+                background-color: #04AA6D;
+            }
+    </style>
+
+}
+    <form id="formPost">
+        <div class="tab">
+            School Details:
+
+
+            <input type="hidden" id="SchoolId" value="@Model.SchoolId" />
+            <input id="SchoolName" placeholder="School Name" value="@Model.SchoolName" />
+            <input id="SchoolAddress" placeholder="School Address" value="@Model.SchoolAddress" />
+            <input id="SchoolCity" placeholder="School City" value="@Model.SchoolCity" />
+            <input id="SchoolPinCode" placeholder="School Pin Code" value="@Model.SchoolPinCode" />
+            <input id="SchoolState" placeholder="School State" value="@Model.SchoolState" />
+            <input id="SchoolPhone" placeholder="SchoolPhone" value="@Model.SchoolPhone" />
+            <input id="EstablishmentDate" placeholder="Establishment Date" value="@Model.EstablishmentDate" />
+            <input id="AcademicYear" placeholder="Academy Year" value="@ViewBag.AcademyYear" />
+            <input type="hidden" id="AcademicYearId" placeholder="Academy Year Id" value="@ViewBag.AcademyYearId" />
+
+
+            <input id="SchoolCode" placeholder="School Code " value="@Model.SchoolCode" />
+            <input id="AcademicStartDate" placeholder="Academic Start Date" value="@Model.AcademicStartDate" />
+            <input id="AcademicEndDate" placeholder="Academic End Date" value="@Model.AcademicEndDate" />
+            <input id="GeoLocation" placeholder="Geo Location" value="@Model.GeoLocation" />
+
+            <input id="SchoolEmail" placeholder="School Email" value="@Model.SchoolEmail" />
+            <input id="SchoolWebsite" placeholder="School Website" value="@Model.SchoolWebsite" />
+            <input id="SchoolTrustName" placeholder="School TrustName" value="@Model.SchoolTrustName" />
+            <input id="SchoolPAN" placeholder="School PAN" value="@Model.SchoolPAN" />
+            <input id="SchoolGSTNo" placeholder="School GSTNo" value="@Model.SchoolGSTNo" />
+            @{
+            var cnt = ViewBag.Data;
+            int i = 1;
+            foreach (var item in cnt)
+            {
                 <div class="row">
                     <select id="ClassId_@i">
                         <option>Select Class</option>
                         @{
-                        string classSelected = string.Empty;
+                            string classSelected = string.Empty;
                         }
                         @foreach (var dt in ViewBag.Data)
-                    {
+                        {
                             <option value="@dt.classId" @classSelected>@dt.className</option>
-                    }
+                        }
                     </select>
                     <input type="Text" id="TotalDivisions_@i" placeholder="Total Division (e.g. 5)" />
                     <input type="Text" id="ClassBookPrice_@i" placeholder="Class Book Price" />
                 </div>
-            i++;
+                i++;
+            }
         }
-    }
-    <button id="btnSave">Save</button>
+    </div>
+    <div class="tab">
+        School Owner:
+        <input id="SchoolOwnerFirstName" placeholder="School Owner FirstName" value="@Model.SchoolOwnerFirstName" />
+        <input id="SchoolOwnerMiddelName" placeholder="School Owner MiddelName" value="@Model.SchoolOwnerMiddelName" />
+        <input id="SchoolOwnerLastName" placeholder="School Owner LastName" value="@Model.SchoolOwnerFirstName" />
+        <input id="SchoolOwnerEmail" placeholder="School Owner Email" value="@Model.SchoolOwnerEmail" />
+        <input id="SchoolOwnerPhone" placeholder="School Owener Phone" value="@Model.SchoolOwnerPhone" />
+
+    </div>
+    <div class="tab">
+        School Principle:
+        <input id="SchoolPrincipleFirstName" placeholder="School Principle FirstName" value="@Model.SchoolPrincipleFirstName" />
+        <input id="SchoolPrincipleMiddelName" placeholder="School Principle MiddelName" value="@Model.SchoolPrincipleMiddelName" />
+        <input id="SchoolPrincipleLastName" placeholder="School Principle LastName" value="@Model.SchoolPrincipleLastName" />
+        <input id="SchoolPrincipleEmail" placeholder="School Principle Email" value="@Model.SchoolPrincipleEmail" />
+        <input id="SchoolPrinciplePhone" placeholder="School Principle Phone" value="@Model.SchoolPrinciplePhone" />
+    </div>
+    <div class="tab">
+        School Coordinator:
+        <input id="SchoolCoordinatorFirstName" placeholder="School Coordinator FirstName" value="@Model.SchoolCoordinatorFirstName" />
+        <input id="SchoolCoordinatorMiddelName" placeholder="School Coordinator MiddelName" value="@Model.SchoolCoordinatorMiddelName" />
+        <input id="SchoolCoordinatorLastName" placeholder="School Coordinator LastName" value="@Model.SchoolCoordinatorLastName" />
+        <input id="SchoolCoordinatorEmail" placeholder="School Coordinator Email" value="@Model.SchoolCoordinatorEmail" />
+        <input id="SchoolCoordinatorPhone" placeholder="School Coordinator Phone" value="@Model.SchoolCoordinatorPhone" />
+    </div>
+    <div class="tab">
+        School Coordinator:
+        <input type="file" class="custom-file-input" id="SchoolLogo1PathFile" name="SchoolLogo1PathFile">
+        <input type="hidden" id="SchoolLogo1Path" name="SchoolLogo1Path" value="@Model.SchoolLogo1Path">
+        <input type="file" class="custom-file-input" id="SchoolLogo2PathFile" name="SchoolLogo2PathFile">
+        <input type="hidden" id="SchoolLogo2Path" name="SchoolLogo2Path" value="@Model.SchoolLogo2Path">
+        <input type="file" class="custom-file-input" id="DashboardPicPathFile" name="DashboardPicPathFile">
+        <input type="hidden" id="DashboardPicPath" name="DashboardPicPath" value="@Model.DashboardPicPath">
+    </div>
+    <div style="overflow:auto;">
+        <div style="float:right;">
+            <a id="prevBtn" class="btn btn-success btn-sm" onclick="nextPrev(-1)">Previous</a>
+            <a id="nextBtn" class="btn btn-primary btn-sm" onclick="nextPrev(1)">Next</a>
+            <button id="btnSave">Save</button>
+        </div>
+    </div>
+    <div style="text-align:center;margin-top:40px;">
+        <span class="step"></span>
+        <span class="step"></span>
+        <span class="step"></span>
+        <span class="step"></span>
+    </div>
 </form>
 
 @section scripts{
-   $(function () {
+                                       $(function () {
     <script type="text/javascript">
+        //  start
+
+        var currentTab = 0; // Current tab is set to be the first tab (0)
+        showTab(currentTab); // Display the current tab
+
+        function showTab(n) {
+            // This function will display the specified tab of the form...
+            var x = document.getElementsByClassName("tab");
+            x[n].style.display = "block";
+            //... and fix the Previous/Next buttons:
+            if (n == 0) {
+                document.getElementById("prevBtn").style.display = "none";
+            } else {
+                document.getElementById("prevBtn").style.display = "inline";
+            }
+            if (n == (x.length - 1)) {
+                document.getElementById("nextBtn").hidd = "Submit";
+            } else {
+                document.getElementById("nextBtn").innerHTML = "Next";
+            }
+            //... and run a function that will display the correct step indicator:
+            fixStepIndicator(n)
+        }
+
+        function nextPrev(n) {
+            // This function will figure out which tab to display
+            var x = document.getElementsByClassName("tab");
+            // Exit the function if any field in the current tab is invalid:
+            // if (n == 1 && !validateForm()) return false;
+            // Hide the current tab:
+            x[currentTab].style.display = "none";
+            // Increase or decrease the current tab by 1:
+            currentTab = currentTab + n;
+            // if you have reached the end of the form...
+            if (currentTab >= x.length) {
+                // ... the form gets submitted:
+                document.getElementById("studentForm").submit();
+                return false;
+            }
+            // Otherwise, display the correct tab:
+            showTab(currentTab);
+        }
+
+        function validateForm() {
+            // This function deals with validation of the form fields
+            var x, y, i, valid = true;
+            x = document.getElementsByClassName("tab");
+            y = x[currentTab].getElementsByTagName("input");
+            // A loop that checks every input field in the current tab:
+            for (i = 0; i < y.length; i++) {
+                // If a field is empty...
+                if (y[i].value == "") {
+                    // add an "invalid" class to the field:
+                    y[i].className += " invalid";
+                    // and set the current valid status to false
+                    valid = false;
+                }
+            }
+            // If the valid status is true, mark the step as finished and valid:
+            if (valid) {
+                document.getElementsByClassName("step")[currentTab].className += " finish";
+            }
+            return valid; // return the valid status
+        }
+
+        function fixStepIndicator(n) {
+            // This function removes the "active" class of all steps...
+            var i, x = document.getElementsByClassName("step");
+            for (i = 0; i < x.length; i++) {
+                x[i].className = x[i].className.replace(" active", "");
+            }
+            //... and adds the "active" class on the current step:
+            x[n].className += " active";
+        }
+
+
+
+        // end
+
+
+
+
         $("#btnSave").click(function (e) {
             debugger;
             imgPath = '';
@@ -99,7 +280,7 @@
                     SchoolState: $("#SchoolState").val(),
                     SchoolPhone: $("#SchoolPhone").val(),
                     SchoolCode: $("#SchoolCode").val(),
-                    AcademicYear:$("#AcademicYear").val(),
+                    AcademicYear: $("#AcademicYear").val(),
                     AcademicStartDate: $("#AcademicStartDate").val(),
                     AcademicEndDate: $("#AcademicEndDate").val(),
                     SchoolOwnerFirstName: $("#SchoolOwnerFirstName").val(),
@@ -156,7 +337,8 @@
                                 title: "School",
                                 text: "Successfully created!",
                                 type: "success"
-                            });}
+                            });
+                        }
                         //} else if (data.status === "duplicate") {
                         //    sweetAlert("Validation Alert!", data.responseMsg, "warning");
                         //} else if (data.status === "error") {

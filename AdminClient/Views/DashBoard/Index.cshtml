@@ -195,13 +195,14 @@
 
             $("#SchoolId").change(function () {
                 debugger;
-                var key = "httpSchool";
-                changeDropdown(key, this.value);
+                var SchoolName = $(this).find("option:selected").text();
+                changeDropdown("httpSchoolId", $(this).find("option:selected").val(), "httpSchool", SchoolName);
             });
 
             $("#AcademyYearId").change(function () {
-                var key = "httpAcYear";
-                changeDropdown(key, this.value);
+                debugger;
+                var AcdYear = $(this).find("option:selected").text();
+                changeDropdown("httpAcYearId", $(this).find("option:selected").val(), "httpAcYear", AcdYear);
             });
         });
 
@@ -339,8 +340,8 @@
                 success: function (data) {
                     if (data) {
                         debugger;
-                        var selecteValue='';
-                        var defaultSchoolId = '@Context.Session.GetString("httpSchool")';
+                        var selecteValue = '';
+                        var defaultSchoolId = '@Context.Session.GetString("httpSchoolId")';
                         for (let i = 0; i < data.data.length; i++) {
                             if (data.data[i].schoolId === parseInt(defaultSchoolId)) { selecteValue = "selected"; }
                             $('#SchoolId').append('<option value="' + data.data[i].schoolId + '"' + selecteValue + '>' + data.data[i].schoolName + '</option>');
@@ -371,10 +372,11 @@
                 dataType: "json",
                 success: function (data) {
                     if (data) {
-                        var defaultAcademyId = '@Context.Session.GetString("httpAcYear")';
+                        var selecteValue = '';
+                        var defaultAcademyId = '@Context.Session.GetString("httpAcYearId")';
                         for (let i = 0; i < data.data.length; i++) {
                             if (data.data[i].academyYearId === parseInt(defaultAcademyId)) { selecteValue = "selected"; }
-                            $('#AcademyYearId').append('<option value="' + data.data[i].academyYearId + '">' + data.data[i].academyYearName + '</option>');
+                            $('#AcademyYearId').append('<option value="' + data.data[i].academyYearId + '"' + selecteValue + '>' + data.data[i].academyYearName + '</option>');
                         }
                     } else {
                         sweetAlert("Validation Alert!", "Something unexpected!", "warning");
@@ -390,8 +392,8 @@
             });
         }
 
-        function changeDropdown(key, value) {
-            var SessionManager = { key: key, value: value };
+        function changeDropdown(key1, value1, key2, value2) {
+            var SessionManager = { IdKey: key1, IdValue: value1, NameKey: key2, NameValue: value2 };
             var url = "/DashBoard/SetChangeSchoolSession";
             $.post(url, SessionManager).done(function (response) { });
         }

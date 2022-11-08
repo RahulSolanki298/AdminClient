@@ -11,6 +11,8 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace AdminClient.Controllers
 {
@@ -54,6 +56,9 @@ namespace AdminClient.Controllers
         {
             StudentModel studentModel = new StudentModel();
             string token = HttpContext.Session.GetString(tokenTxt);
+            var schoolId = HttpContext.Session.GetString(SessionKeys.httpSchoolId);
+            ViewBag.schoolId = schoolId;
+            ViewBag.schoolName = HttpContext.Session.GetString(SessionKeys.httpSchool);
             int studentId = Convert.ToInt32(id);
             if (studentId > 0)
             {
@@ -71,11 +76,46 @@ namespace AdminClient.Controllers
                     }
                 }
             }
-            ViewBag.schoolId = HttpContext.Session.GetString(SessionKeys.httpSchoolId);
-            ViewBag.schoolName = HttpContext.Session.GetString(SessionKeys.httpSchool);
+
+            var class_url = _apiBaseUrl + $"/api/ClassMasters/GetClassMasters/{schoolId}";
+            var request = new HttpRequestMessage(HttpMethod.Get, class_url);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            // request.Content = contentData;
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage response = await client.SendAsync(request);
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    string returnString = await response.Content.ReadAsStringAsync();
+                    var classDT = AllChildren(JObject.Parse(returnString.ToString().Replace("&#xD;&#xA;", Environment.NewLine)))
+                                            .First(c => c.Type == JTokenType.Array && c.Path.Contains("data"))
+                                            .Children<JObject>();
+                    ViewBag.classDT = classDT;
+                }
+            }
+
+            var div_url = _apiBaseUrl + $"/api/SchoolClassDivisions/GetschoolClassDivisions/{schoolId}";
+            var div_request = new HttpRequestMessage(HttpMethod.Get, div_url);
+            div_request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            // request.Content = contentData;
+            using (HttpClient Divclient = new HttpClient())
+            {
+                HttpResponseMessage response = await Divclient.SendAsync(div_request);
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    string returnString = await response.Content.ReadAsStringAsync();
+                    var classDivisionDT = AllChildren(JObject.Parse(returnString.ToString().Replace("&#xD;&#xA;", Environment.NewLine)))
+                                            .First(c => c.Type == JTokenType.Array && c.Path.Contains("data"))
+                                            .Children<JObject>();
+                    ViewBag.classDivisionDT = classDivisionDT;
+                }
+            }
 
             return View(studentModel);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> SaveStudentData(StudentModel _studentModel)
@@ -98,6 +138,19 @@ namespace AdminClient.Controllers
                 }
             }
             return RedirectToAction("Index");
+        }
+
+        // recursively yield all children of json
+        private static IEnumerable<JToken> AllChildren(JToken json)
+        {
+            foreach (var c in json.Children())
+            {
+                yield return c;
+                foreach (var cc in AllChildren(c))
+                {
+                    yield return cc;
+                }
+            }
         }
 
     }

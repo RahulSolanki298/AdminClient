@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AdminClient.Controllers
 {
-    [CheckSession]
+   // [CheckSession]
     public class DashBoardController : Controller
     {
         [HttpGet]
