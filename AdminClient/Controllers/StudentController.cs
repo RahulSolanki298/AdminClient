@@ -77,7 +77,7 @@ namespace AdminClient.Controllers
                 }
             }
 
-            var class_url = _apiBaseUrl + $"/api/ClassMasters/GetClassMasters/{schoolId}";
+            var class_url = _apiBaseUrl + $"/api/ClassMasters/GetClassMasters";
             var request = new HttpRequestMessage(HttpMethod.Get, class_url);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
             // request.Content = contentData;

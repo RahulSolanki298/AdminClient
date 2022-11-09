@@ -82,93 +82,95 @@
             School Details:
 
 
-            <input type="hidden" id="SchoolId" value="@Model.SchoolId" />
-            <input id="SchoolName" placeholder="School Name" value="@Model.SchoolName" />
-            <input id="SchoolAddress" placeholder="School Address" value="@Model.SchoolAddress" />
-            <input id="SchoolCity" placeholder="School City" value="@Model.SchoolCity" />
-            <input id="SchoolPinCode" placeholder="School Pin Code" value="@Model.SchoolPinCode" />
-            <input id="SchoolState" placeholder="School State" value="@Model.SchoolState" />
-            <input id="SchoolPhone" placeholder="SchoolPhone" value="@Model.SchoolPhone" />
-            <input id="EstablishmentDate" placeholder="Establishment Date" value="@Model.EstablishmentDate" />
-            <input id="AcademicYear" placeholder="Academy Year" value="@ViewBag.AcademyYear" />
-            <input type="hidden" id="AcademicYearId" placeholder="Academy Year Id" value="@ViewBag.AcademyYearId" />
+            <p><input type="hidden" id="SchoolId" value="@Model.SchoolId" /></p>
+            <p><input id="SchoolName" placeholder="School Name" value="@Model.SchoolName" /></p>
+            <p><input id="SchoolAddress" placeholder="School Address" value="@Model.SchoolAddress" /></p>
+            <p><input id="SchoolCity" placeholder="School City" value="@Model.SchoolCity" /></p>
+            <p><input id="SchoolPinCode" placeholder="School Pin Code" value="@Model.SchoolPinCode" /></p>
+            <p><input id="SchoolState" placeholder="School State" value="@Model.SchoolState" /></p>
+            <p><input id="SchoolPhone" placeholder="SchoolPhone" value="@Model.SchoolPhone" /></p>
+            <p><input id="EstablishmentDate" placeholder="Establishment Date" value="@Model.EstablishmentDate" /></p>
+            <p><input id="AcademicYear" placeholder="Academy Year" value="@ViewBag.AcademyYear" /></p>
+            <p><input type="hidden" id="AcademicYearId" placeholder="Academy Year Id" value="@ViewBag.AcademyYearId" /></p>
 
 
-            <input id="SchoolCode" placeholder="School Code " value="@Model.SchoolCode" />
-            <input id="AcademicStartDate" placeholder="Academic Start Date" value="@Model.AcademicStartDate" />
-            <input id="AcademicEndDate" placeholder="Academic End Date" value="@Model.AcademicEndDate" />
-            <input id="GeoLocation" placeholder="Geo Location" value="@Model.GeoLocation" />
+            <p><input id="SchoolCode" placeholder="School Code " value="@Model.SchoolCode" /></p>
+            <p><input id="AcademicStartDate" placeholder="Academic Start Date" value="@Model.AcademicStartDate" /></p>
+            <p><input id="AcademicEndDate" placeholder="Academic End Date" value="@Model.AcademicEndDate" /></p>
+            <p><input id="GeoLocation" placeholder="Geo Location" value="@Model.GeoLocation" /></p>
 
-            <input id="SchoolEmail" placeholder="School Email" value="@Model.SchoolEmail" />
-            <input id="SchoolWebsite" placeholder="School Website" value="@Model.SchoolWebsite" />
-            <input id="SchoolTrustName" placeholder="School TrustName" value="@Model.SchoolTrustName" />
-            <input id="SchoolPAN" placeholder="School PAN" value="@Model.SchoolPAN" />
-            <input id="SchoolGSTNo" placeholder="School GSTNo" value="@Model.SchoolGSTNo" />
-            @{
-            var cnt = ViewBag.Data;
-            int i = 1;
-            foreach (var item in cnt)
-            {
-                <div class="row">
-                    <select id="ClassId_@i">
-                        <option>Select Class</option>
-                        @{
-                            string classSelected = string.Empty;
-                        }
-                        @foreach (var dt in ViewBag.Data)
-                        {
-                            <option value="@dt.classId" @classSelected>@dt.className</option>
-                        }
-                    </select>
-                    <input type="Text" id="TotalDivisions_@i" placeholder="Total Division (e.g. 5)" />
-                    <input type="Text" id="ClassBookPrice_@i" placeholder="Class Book Price" />
-                </div>
-                i++;
+            <p><input id="SchoolEmail" placeholder="School Email" value="@Model.SchoolEmail" /></p>
+            <p><input id="SchoolWebsite" placeholder="School Website" value="@Model.SchoolWebsite" /></p>
+            <p><input id="SchoolTrustName" placeholder="School TrustName" value="@Model.SchoolTrustName" /></p>
+            <p><input id="SchoolPAN" placeholder="School PAN" value="@Model.SchoolPAN" /></p>
+            <p>
+                <input id="SchoolGSTNo" placeholder="School GSTNo" value="@Model.SchoolGSTNo" />
+                @{
+                var cnt = ViewBag.Data;
+                int i = 1;
+                foreach (var item in cnt)
+                {
+                    <div class="row">
+                        <select id="ClassId_@i">
+                            <option>Select Class</option>
+                            @{
+                                string classSelected = string.Empty;
+                            }
+                            @foreach (var dt in ViewBag.Data)
+                            {
+                                <option value="@dt.classId" @classSelected>@dt.className</option>
+                            }
+                        </select>
+                        <input type="Text" id="TotalDivisions_@i" placeholder="Total Division (e.g. 5)" />
+                        <input type="Text" id="ClassBookPrice_@i" placeholder="Class Book Price" />
+                    </div>
+                    i++;
+                }
             }
-        }
     </div>
     <div class="tab">
         School Owner:
-        <input id="SchoolOwnerFirstName" placeholder="School Owner FirstName" value="@Model.SchoolOwnerFirstName" />
-        <input id="SchoolOwnerMiddelName" placeholder="School Owner MiddelName" value="@Model.SchoolOwnerMiddelName" />
-        <input id="SchoolOwnerLastName" placeholder="School Owner LastName" value="@Model.SchoolOwnerFirstName" />
-        <input id="SchoolOwnerEmail" placeholder="School Owner Email" value="@Model.SchoolOwnerEmail" />
-        <input id="SchoolOwnerPhone" placeholder="School Owener Phone" value="@Model.SchoolOwnerPhone" />
+        <p><input id="SchoolOwnerFirstName" placeholder="School Owner FirstName" value="@Model.SchoolOwnerFirstName" /></p>
+        <p><input id="SchoolOwnerMiddelName" placeholder="School Owner MiddelName" value="@Model.SchoolOwnerMiddelName" /></p>
+        <p><input id="SchoolOwnerLastName" placeholder="School Owner LastName" value="@Model.SchoolOwnerFirstName" /></p>
+        <p><input id="SchoolOwnerEmail" placeholder="School Owner Email" value="@Model.SchoolOwnerEmail" /></p>
+        <p><input id="SchoolOwnerPhone" placeholder="School Owener Phone" value="@Model.SchoolOwnerPhone" /></p>
 
     </div>
     <div class="tab">
         School Principle:
-        <input id="SchoolPrincipleFirstName" placeholder="School Principle FirstName" value="@Model.SchoolPrincipleFirstName" />
-        <input id="SchoolPrincipleMiddelName" placeholder="School Principle MiddelName" value="@Model.SchoolPrincipleMiddelName" />
-        <input id="SchoolPrincipleLastName" placeholder="School Principle LastName" value="@Model.SchoolPrincipleLastName" />
-        <input id="SchoolPrincipleEmail" placeholder="School Principle Email" value="@Model.SchoolPrincipleEmail" />
-        <input id="SchoolPrinciplePhone" placeholder="School Principle Phone" value="@Model.SchoolPrinciplePhone" />
+        <p><input id="SchoolPrincipleFirstName" placeholder="School Principle FirstName" value="@Model.SchoolPrincipleFirstName" /></p>
+        <p><input id="SchoolPrincipleMiddelName" placeholder="School Principle MiddelName" value="@Model.SchoolPrincipleMiddelName" /></p>
+        <p><input id="SchoolPrincipleLastName" placeholder="School Principle LastName" value="@Model.SchoolPrincipleLastName" /></p>
+        <p><input id="SchoolPrincipleEmail" placeholder="School Principle Email" value="@Model.SchoolPrincipleEmail" /></p>
+        <p><input id="SchoolPrinciplePhone" placeholder="School Principle Phone" value="@Model.SchoolPrinciplePhone" /></p>
     </div>
     <div class="tab">
         School Coordinator:
-        <input id="SchoolCoordinatorFirstName" placeholder="School Coordinator FirstName" value="@Model.SchoolCoordinatorFirstName" />
-        <input id="SchoolCoordinatorMiddelName" placeholder="School Coordinator MiddelName" value="@Model.SchoolCoordinatorMiddelName" />
-        <input id="SchoolCoordinatorLastName" placeholder="School Coordinator LastName" value="@Model.SchoolCoordinatorLastName" />
-        <input id="SchoolCoordinatorEmail" placeholder="School Coordinator Email" value="@Model.SchoolCoordinatorEmail" />
-        <input id="SchoolCoordinatorPhone" placeholder="School Coordinator Phone" value="@Model.SchoolCoordinatorPhone" />
+        <p><input id="SchoolCoordinatorFirstName" placeholder="School Coordinator FirstName" value="@Model.SchoolCoordinatorFirstName" /></p>
+        <p><input id="SchoolCoordinatorMiddelName" placeholder="School Coordinator MiddelName" value="@Model.SchoolCoordinatorMiddelName" /></p>
+        <p><input id="SchoolCoordinatorLastName" placeholder="School Coordinator LastName" value="@Model.SchoolCoordinatorLastName" /></p>
+        <p><input id="SchoolCoordinatorEmail" placeholder="School Coordinator Email" value="@Model.SchoolCoordinatorEmail" /></p>
+        <p><input id="SchoolCoordinatorPhone" placeholder="School Coordinator Phone" value="@Model.SchoolCoordinatorPhone" /></p>
     </div>
     <div class="tab">
-        School Coordinator:
-        <input type="file" class="custom-file-input" id="SchoolLogo1PathFile" name="SchoolLogo1PathFile">
-        <input type="hidden" id="SchoolLogo1Path" name="SchoolLogo1Path" value="@Model.SchoolLogo1Path">
-        <input type="file" class="custom-file-input" id="SchoolLogo2PathFile" name="SchoolLogo2PathFile">
-        <input type="hidden" id="SchoolLogo2Path" name="SchoolLogo2Path" value="@Model.SchoolLogo2Path">
-        <input type="file" class="custom-file-input" id="DashboardPicPathFile" name="DashboardPicPathFile">
-        <input type="hidden" id="DashboardPicPath" name="DashboardPicPath" value="@Model.DashboardPicPath">
+        School File Upload:
+        <p><input type="file" class="custom-file-input" id="SchoolLogo1PathFile" name="SchoolLogo1PathFile"></p>
+        <p><input type="hidden" id="SchoolLogo1Path" name="SchoolLogo1Path" value="@Model.SchoolLogo1Path"></p>
+        <p><input type="file" class="custom-file-input" id="SchoolLogo2PathFile" name="SchoolLogo2PathFile"></p>
+        <p><input type="hidden" id="SchoolLogo2Path" name="SchoolLogo2Path" value="@Model.SchoolLogo2Path"></p>
+        <p><input type="file" class="custom-file-input" id="DashboardPicPathFile" name="DashboardPicPathFile"></p>
+        <p><input type="hidden" id="DashboardPicPath" name="DashboardPicPath" value="@Model.DashboardPicPath"></p>
     </div>
     <div style="overflow:auto;">
         <div style="float:right;">
             <a id="prevBtn" class="btn btn-success btn-sm" onclick="nextPrev(-1)">Previous</a>
             <a id="nextBtn" class="btn btn-primary btn-sm" onclick="nextPrev(1)">Next</a>
-            <button id="btnSave">Save</button>
+            @*<button id="btnSave">Save</button>*@
         </div>
     </div>
     <div style="text-align:center;margin-top:40px;">
+        <span class="step"></span>
         <span class="step"></span>
         <span class="step"></span>
         <span class="step"></span>
@@ -177,239 +179,266 @@
 </form>
 
 @section scripts{
-                                       $(function () {
     <script type="text/javascript">
-        //  start
+        $(function () {
+            $("#btnSave").click(function (e) {
+                debugger;
+                uploadSchoolLogo1File();
+                uploadSchoolLogo2File();
+                uploadDashboardPicPath();
 
-        var currentTab = 0; // Current tab is set to be the first tab (0)
-        showTab(currentTab); // Display the current tab
-
-        function showTab(n) {
-            // This function will display the specified tab of the form...
-            var x = document.getElementsByClassName("tab");
-            x[n].style.display = "block";
-            //... and fix the Previous/Next buttons:
-            if (n == 0) {
-                document.getElementById("prevBtn").style.display = "none";
-            } else {
-                document.getElementById("prevBtn").style.display = "inline";
-            }
-            if (n == (x.length - 1)) {
-                document.getElementById("nextBtn").hidd = "Submit";
-            } else {
-                document.getElementById("nextBtn").innerHTML = "Next";
-            }
-            //... and run a function that will display the correct step indicator:
-            fixStepIndicator(n)
-        }
-
-        function nextPrev(n) {
-            // This function will figure out which tab to display
-            var x = document.getElementsByClassName("tab");
-            // Exit the function if any field in the current tab is invalid:
-            // if (n == 1 && !validateForm()) return false;
-            // Hide the current tab:
-            x[currentTab].style.display = "none";
-            // Increase or decrease the current tab by 1:
-            currentTab = currentTab + n;
-            // if you have reached the end of the form...
-            if (currentTab >= x.length) {
-                // ... the form gets submitted:
-                document.getElementById("studentForm").submit();
-                return false;
-            }
-            // Otherwise, display the correct tab:
-            showTab(currentTab);
-        }
-
-        function validateForm() {
-            // This function deals with validation of the form fields
-            var x, y, i, valid = true;
-            x = document.getElementsByClassName("tab");
-            y = x[currentTab].getElementsByTagName("input");
-            // A loop that checks every input field in the current tab:
-            for (i = 0; i < y.length; i++) {
-                // If a field is empty...
-                if (y[i].value == "") {
-                    // add an "invalid" class to the field:
-                    y[i].className += " invalid";
-                    // and set the current valid status to false
-                    valid = false;
-                }
-            }
-            // If the valid status is true, mark the step as finished and valid:
-            if (valid) {
-                document.getElementsByClassName("step")[currentTab].className += " finish";
-            }
-            return valid; // return the valid status
-        }
-
-        function fixStepIndicator(n) {
-            // This function removes the "active" class of all steps...
-            var i, x = document.getElementsByClassName("step");
-            for (i = 0; i < x.length; i++) {
-                x[i].className = x[i].className.replace(" active", "");
-            }
-            //... and adds the "active" class on the current step:
-            x[n].className += " active";
-        }
-
-
-
-        // end
-
-
-
-
-        $("#btnSave").click(function (e) {
-            debugger;
-            imgPath = '';
-            //var img1=uploadSchoolLogo1File();
-            //var img2=uploadSchoolLogo2File();
-            //var img3=uploadDashboardPicPath();
-
-            if (!document.getElementById("formPost").checkValidity()) {
-                e.preventDefault();
-            } else {
-                var _schoolModel = {
-                    SchoolId: $("#SchoolId").val(),
-                    SchoolName: $("#SchoolName").val(),
-                    SchoolAddress: $("#SchoolAddress").val(),
-                    SchoolCity: $("#SchoolCity").val(),
-                    SchoolPinCode: $("#SchoolPinCode").val(),
-                    SchoolState: $("#SchoolState").val(),
-                    SchoolPhone: $("#SchoolPhone").val(),
-                    SchoolCode: $("#SchoolCode").val(),
-                    AcademicYear: $("#AcademicYear").val(),
-                    AcademicStartDate: $("#AcademicStartDate").val(),
-                    AcademicEndDate: $("#AcademicEndDate").val(),
-                    SchoolOwnerFirstName: $("#SchoolOwnerFirstName").val(),
-                    SchoolOwnerMiddelName: $("#SchoolOwnerMiddelName").val(),
-                    SchoolOwnerLastName: $("#SchoolOwnerLastName").val(),
-                    SchoolOwnerEmail: $("#SchoolOwnerEmail").val(),
-                    SchoolOwnerPhone: $("#SchoolOwnerPhone").val(),
-                    SchoolPrincipleFirstName: $("#SchoolPrincipleFirstName").val(),
-                    SchoolPrincipleMiddleName: $("#SchoolPrincipleMiddleName").val(),
-                    SchoolPrincipleLastName: $("#SchoolPrincipleLastName").val(),
-                    SchoolPrincipleEmail: $("#SchoolPrincipleEmail").val(),
-                    SchoolPrinciplePhone: $("#SchoolPrinciplePhone").val(),
-                    SchoolCoordinatorFirstName: $("#SchoolCoordinatorFirstName").val(),
-                    SchoolCoordinatorMiddleName: $("#SchoolCoordinatorMiddleName").val(),
-                    SchoolCoordinatorLastName: $("#SchoolCoordinatorLastName").val(),
-                    SchoolCoordinatorEmail: $("#SchoolCoordinatorEmail").val(),
-                    SchoolCoordinatorPhone: $("#SchoolCoordinatorPhone").val(),
-                    SchoolEmail: $("#SchoolEmail").val(),
-                    SchoolWebsite: $("#SchoolWebsite").val(),
-                    SchoolTrustName: $("#SchoolTrustName").val(),
-                    SchoolPAN: $("#SchoolPAN").val(),
-                    SchoolGSTNo: $("#SchoolGSTNo").val(),
-                    //SchoolLogo1Path=img1,
-                    //SchoolLogo2Path=img2,
-                    //DashboardPicPath=img3,
-                    //addedBy: @Context.Session.GetInt32("#UserId"),
-                    ClassDivision: [],
-                    BookPrice: []
-                }
-                var inputs = document.getElementsByTagName('select');
-                var totalDiv = "";
-                var bookPrice = "";
-                for (index = 1; index < inputs.length; ++index) {
-                    selectClass = $("#ClassId_" + index + "").val();
-                    totalDiv = $("#TotalDivisions_" + index + "").val();
-                    bookPrice = $("#ClassBookPrice_" + index + "").val();
-                    _schoolModel.ClassDivision.push({ key: parseInt(selectClass), value: parseInt(totalDiv) });
-                    _schoolModel.BookPrice.push({ key: parseInt(selectClass), value: bookPrice });
-                }
-
-                console.log(_schoolModel);
-                $.ajax({
-                    type: "POST",
-                    url: "/School/SaveSchool",
-                    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-                    data: _schoolModel,
-                    //dataType: "json",
-                    success: function (data, statusText, xhr) {
-                        //console.log(xhr.status);
-                        console.log(data);
-                        if (xhr.status === 200) {
-                            sweetAlert({
-                                html: true,
-                                title: "School",
-                                text: "Successfully created!",
-                                type: "success"
-                            });
-                        }
-                        //} else if (data.status === "duplicate") {
-                        //    sweetAlert("Validation Alert!", data.responseMsg, "warning");
-                        //} else if (data.status === "error") {
-                        //    sweetAlert("Validation Alert!", data.responseMsg, "warning");
-                        //} else {
-                        //    sweetAlert("Validation Alert!", "Something unexpected!", "warning");
-                        //}
+                if (!document.getElementById("formPost").checkValidity()) {
+                    e.preventDefault();
+                } else {
+                    var _schoolModel = {
+                        SchoolId: $("#SchoolId").val(),
+                        SchoolName: $("#SchoolName").val(),
+                        SchoolAddress: $("#SchoolAddress").val(),
+                        SchoolCity: $("#SchoolCity").val(),
+                        SchoolPinCode: $("#SchoolPinCode").val(),
+                        SchoolState: $("#SchoolState").val(),
+                        SchoolPhone: $("#SchoolPhone").val(),
+                        SchoolCode: $("#SchoolCode").val(),
+                        AcademicYear: $("#AcademicYear").val(),
+                        AcademicStartDate: $("#AcademicStartDate").val(),
+                        AcademicEndDate: $("#AcademicEndDate").val(),
+                        SchoolOwnerFirstName: $("#SchoolOwnerFirstName").val(),
+                        SchoolOwnerMiddelName: $("#SchoolOwnerMiddelName").val(),
+                        SchoolOwnerLastName: $("#SchoolOwnerLastName").val(),
+                        SchoolOwnerEmail: $("#SchoolOwnerEmail").val(),
+                        SchoolOwnerPhone: $("#SchoolOwnerPhone").val(),
+                        SchoolPrincipleFirstName: $("#SchoolPrincipleFirstName").val(),
+                        SchoolPrincipleMiddleName: $("#SchoolPrincipleMiddleName").val(),
+                        SchoolPrincipleLastName: $("#SchoolPrincipleLastName").val(),
+                        SchoolPrincipleEmail: $("#SchoolPrincipleEmail").val(),
+                        SchoolPrinciplePhone: $("#SchoolPrinciplePhone").val(),
+                        SchoolCoordinatorFirstName: $("#SchoolCoordinatorFirstName").val(),
+                        SchoolCoordinatorMiddleName: $("#SchoolCoordinatorMiddleName").val(),
+                        SchoolCoordinatorLastName: $("#SchoolCoordinatorLastName").val(),
+                        SchoolCoordinatorEmail: $("#SchoolCoordinatorEmail").val(),
+                        SchoolCoordinatorPhone: $("#SchoolCoordinatorPhone").val(),
+                        SchoolEmail: $("#SchoolEmail").val(),
+                        SchoolWebsite: $("#SchoolWebsite").val(),
+                        SchoolTrustName: $("#SchoolTrustName").val(),
+                        SchoolPAN: $("#SchoolPAN").val(),
+                        SchoolGSTNo: $("#SchoolGSTNo").val(),
+                        SchoolLogo1Path: $("input[name='SchoolLogo1Path']").val(),
+                        SchoolLogo2Path: $("input[name='SchoolLogo2Path']").val(),
+                        DashboardPicPath: $("input[name='DashboardPicPath']").val(),
+                        //addedBy: @Context.Session.GetInt32("#UserId"),
+                        ClassDivision: [],
+                        BookPrice: []
                     }
-                    //error: function (data) {
-                    //    if (data.status == 401) {
-                    //        window.location.replace('/Message/TokenExpire');
-                    //    } else if (data.status == 403) {
-                    //        window.location.replace('/Message/Unauthorize');
-                    //    } else if (data.status == 400) {
-                    //        sweetAlert("Validation Alert!", "Please check input data!", "warning");
-                    //    }
-                    //}
-                });
-            }
-        });
-
-        // File Upload
-        function uploadSchoolLogo1File() {
-            var totalFiles = document.getElementById('SchoolLogo1Path').files.length;
-            if (totalFiles > 0) {
-                var formData = new FormData();
-                var files = document.getElementById('SchoolLogo1Path').files;
-                formData.append("file", files[0]);
-                uploadFile(formData);
-            }
-        }
-        function uploadSchoolLogo2File() {
-            var totalFiles = document.getElementById('SchoolLogo2Path').files.length;
-            if (totalFiles > 0) {
-                var formData = new FormData();
-                var files = document.getElementById('SchoolLogo2Path').files;
-                formData.append("file", files[0]);
-                uploadFile(formData);
-            }
-        }
-        function uploadDashboardPicPath() {
-            var totalFiles = document.getElementById('DashboardPicPath').files.length;
-            if (totalFiles > 0) {
-                var formData = new FormData();
-                var files = document.getElementById('DashboardPicPath').files;
-                formData.append("file", files[0]);
-                uploadFile(formData);
-            }
-        }
-        function uploadFile(formData) {
-            $.ajax(
-                {
-                    url: "/Upload/ImgUpload",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    async: false,
-                    type: "POST",
-                    success: function (data) {
-                        imgPath = data;
-                        // $('#profilePic').attr('src', imgPath);
-                        // resetInputFile('#userModal');
-                    },
-                    error: function (data) {
-                        window.location.replace('/Message/SessionExpire');
+                    var inputs = document.getElementsByTagName('select');
+                    var totalDiv = "";
+                    var bookPrice = "";
+                    for (index = 1; index < inputs.length; ++index) {
+                        selectClass = $("#ClassId_" + index + "").val();
+                        totalDiv = $("#TotalDivisions_" + index + "").val();
+                        bookPrice = $("#ClassBookPrice_" + index + "").val();
+                        _schoolModel.ClassDivision.push({ key: parseInt(selectClass), value: parseInt(totalDiv) });
+                        _schoolModel.BookPrice.push({ key: parseInt(selectClass), value: bookPrice });
                     }
-                }
-            );
-        }
 
-    </script>
-    });
-
+                    console.log(_schoolModel);
+                    $.ajax({
+                        type: "POST",
+                        url: "/School/SaveSchool",
+                        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                        data: _schoolModel,
+                        //dataType: "json",
+                        success: function (data, statusText, xhr) {
+                            //console.log(xhr.status);
+                            console.log(data);
+                            if (xhr.status === 200) {
+                                sweetAlert({
+                                    html: true,
+                                    title: "School",
+                                    text: "Successfully created!",
+                                    type: "success"
+                                });
                             }
+                            //} else if (data.status === "duplicate") {
+                            //    sweetAlert("Validation Alert!", data.responseMsg, "warning");
+                            //} else if (data.status === "error") {
+                            //    sweetAlert("Validation Alert!", data.responseMsg, "warning");
+                            //} else {
+                            else {
+                                sweetAlert("Validation Alert!", "Something unexpected!", "warning");
+                            }
+                        },
+                        error: function (data) {
+                            if (data.status == 401) {
+                                window.location.replace('/Message/TokenExpire');
+                            } else if (data.status == 403) {
+                                window.location.replace('/Message/Unauthorize');
+                            } else if (data.status == 400) {
+                                sweetAlert("Validation Alert!", "Please check input data!", "warning");
+                            }
+                        }
+                    });
+                }
+
+
+                //  start
+
+                var currentTab = 0; // Current tab is set to be the first tab (0)
+                showTab(currentTab); // Display the current tab
+
+                function showTab(n) {
+                    // This function will display the specified tab of the form...
+                    var x = document.getElementsByClassName("tab");
+                    x[n].style.display = "block";
+                    //... and fix the Previous/Next buttons:
+                    if (n == 0) {
+                        document.getElementById("prevBtn").style.display = "none";
+                    } else {
+                        document.getElementById("prevBtn").style.display = "inline";
+                    }
+                    if (n == (x.length - 1)) {
+                        document.getElementById("nextBtn").innerHTML = "Submit";
+                    } else {
+                        document.getElementById("nextBtn").innerHTML = "Next";
+                    }
+                    //... and run a function that will display the correct step indicator:
+                    fixStepIndicator(n)
+                }
+
+                function nextPrev(n) {
+                    // This function will figure out which tab to display
+                    var x = document.getElementsByClassName("tab");
+                    // Exit the function if any field in the current tab is invalid:
+                    // if (n == 1 && !validateForm()) return false;
+                    // Hide the current tab:
+                    x[currentTab].style.display = "none";
+                    // Increase or decrease the current tab by 1:
+                    currentTab = currentTab + n;
+                    // if you have reached the end of the form...
+                    if (currentTab >= x.length) {
+                        // ... the form gets submitted:
+                        document.getElementById("formPost").submit();
+                        return false;
+                    }
+                    // Otherwise, display the correct tab:
+                    showTab(currentTab);
+                }
+
+                function validateForm() {
+                    // This function deals with validation of the form fields
+                    var x, y, i, valid = true;
+                    x = document.getElementsByClassName("tab");
+                    y = x[currentTab].getElementsByTagName("input");
+                    // A loop that checks every input field in the current tab:
+                    for (i = 0; i < y.length; i++) {
+                        // If a field is empty...
+                        if (y[i].value == "") {
+                            // add an "invalid" class to the field:
+                            y[i].className += " invalid";
+                            // and set the current valid status to false
+                            valid = false;
+                        }
+                    }
+                    // If the valid status is true, mark the step as finished and valid:
+                    if (valid) {
+                        document.getElementsByClassName("step")[currentTab].className += " finish";
+                    }
+                    return valid; // return the valid status
+                }
+
+                function fixStepIndicator(n) {
+                    // This function removes the "active" class of all steps...
+                    var i, x = document.getElementsByClassName("step");
+                    for (i = 0; i < x.length; i++) {
+                        x[i].className = x[i].className.replace(" active", "");
+                    }
+                    //... and adds the "active" class on the current step:
+                    x[n].className += " active";
+                }
+
+
+
+                // end
+
+
+                // File Upload
+                function uploadSchoolLogo1File() {
+                    var totalFiles = document.getElementById('SchoolLogo1PathFile').files.length;
+                    if (totalFiles > 0) {
+                        var formData = new FormData();
+                        var files = document.getElementById('SchoolLogo1PathFile').files;
+                        formData.append("file", files[0]);
+                        $.ajax({
+                            url: "/Upload/ImgUpload",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            async: false,
+                            type: "POST",
+                            success: function (data) {
+                                imgPath = data;
+                                $("input[name='SchoolLogo1Path']").val(data);
+                                // $('#profilePic').attr('src', imgPath);
+                                // resetInputFile('#userModal');
+                            },
+                            error: function (data) {
+                                window.location.replace('/Message/SessionExpire');
+                            }
+                        })
+                    }
+                }
+                function uploadSchoolLogo2File() {
+                    var totalFiles = document.getElementById('SchoolLogo2PathFile').files.length;
+                    if (totalFiles > 0) {
+                        var formData = new FormData();
+                        var files = document.getElementById('SchoolLogo2PathFile').files;
+                        formData.append("file", files[0]);
+                        $.ajax({
+                            url: "/Upload/ImgUpload",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            async: false,
+                            type: "POST",
+                            success: function (data) {
+                                imgPath = data;
+                                $("input[name='SchoolLogo2Path']").val(data);
+                                console.log(data);
+                                // $('#profilePic').attr('src', imgPath);
+                                // resetInputFile('#userModal');
+                            },
+                            error: function (data) {
+                                window.location.replace('/Message/SessionExpire');
+                            }
+                        });
+                    }
+                }
+                function uploadDashboardPicPath() {
+                    var totalFiles = document.getElementById('DashboardPicPathFile').files.length;
+                    if (totalFiles > 0) {
+                        var formData = new FormData();
+                        var files = document.getElementById('DashboardPicPathFile').files;
+                        formData.append("file", files[0]);
+                        $.ajax(
+                            {
+                                url: "/Upload/ImgUpload",
+                                data: formData,
+                                processData: false,
+                                contentType: false,
+                                async: false,
+                                type: "POST",
+                                success: function (data) {
+                                    imgPath = data;
+                                    $("input[name='DashboardPicPath']").val(data);
+                                    console.log(data);
+                                    // $('#profilePic').attr('src', imgPath);
+                                    // resetInputFile('#userModal');
+                                },
+                                error: function (data) {
+                                    window.location.replace('/Message/SessionExpire');
+                                }
+                            }
+                        );
+                    }
+                }
+    </script>
+ }

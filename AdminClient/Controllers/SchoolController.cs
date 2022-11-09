@@ -108,7 +108,7 @@ namespace AdminClient.Controllers
                 }
 
             }
-            url = _apiBaseUrl + "/api/ClassMasters/GetClassMasters";
+            url = _apiBaseUrl + $"/api/ClassMasters/GetClassMasters";
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
             // request.Content = contentData;
